@@ -1,26 +1,1402 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowRight, Check, ChevronDown, Download, Factory, Globe2, Leaf, MapPin, Package, Phone, Search, ShieldCheck, Sprout, Store, Truck, Utensils, X, Mail } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  ChevronDown,
+  Download,
+  Factory,
+  FileText,
+  Globe2,
+  Leaf,
+  Mail,
+  MapPin,
+  Package,
+  Phone,
+  Search,
+  ShieldCheck,
+  Ship,
+  Sparkles,
+  Sprout,
+  Star,
+  Store,
+  Truck,
+  Utensils,
+  X,
+} from "lucide-react";
 import { Button } from "./ui/button";
-import { CtaBand, InquiryForm, Modal, PageBanner, ProductCard, ProductPhoto, SiteShell, TestimonialCard } from "./site";
-import { blogs, countries, faqs, processSteps, testimonials } from "@/mock/data";
+import {
+  CtaBand,
+  InquiryForm,
+  Modal,
+  PageBanner,
+  ProductCard,
+  ProductPhoto,
+  SiteShell,
+  TestimonialCard,
+} from "./site";
+import {
+  blogs,
+  countries,
+  countryList,
+  faqList,
+  galleryItems,
+  processSteps,
+  teamMembers,
+  testimonials,
+  whyChooseUs,
+  industriesServed,
+  companyInfo,
+} from "@/mock/data";
 import { useDemo } from "@/mock/store";
-import hero from "@/assets/export-hero.jpg.asset.json";
-import warehouse from "@/assets/quality-warehouse.jpg.asset.json";
-import collection from "@/assets/product-collection.jpg.asset.json";
+import heroAsset from "@/assets/export-hero.jpg.asset.json";
+import warehouseAsset from "@/assets/quality-warehouse.jpg.asset.json";
+import collectionAsset from "@/assets/product-collection.jpg.asset.json";
 
-export function AboutPage(){return <SiteShell><PageBanner title="Our story" subtitle="Rooted in India. Built on trust. Connected to the world."/><section className="section-band"><div className="container-wide grid items-center gap-12 lg:grid-cols-2"><img src={warehouse} alt="Indian agricultural quality inspection" className="about-photo" width={1200} height={912} loading="lazy"/><div><div className="eyebrow">Akvera Universal</div><h2 className="section-title">A dependable bridge between<br/>India and the world.</h2><p className="section-copy mt-5">Akvera Universal Exporter was built on a simple belief that trade works best when it’s built on trust, transparency, and quality.</p><p className="section-copy mt-3">Based in India, we specialize in sourcing and exporting premium agro products, connecting buyers across the globe with authentic, high-quality goods straight from their origin.</p><p className="section-copy mt-3">Every product we export goes through careful selection and quality checks, ensuring that what reaches our clients reflects the standards we stand behind.</p></div></div></section><section className="section-band bg-muted"><div className="container-wide grid gap-10 md:grid-cols-3">{[["Our mission","To connect international buyers with India’s finest agricultural products through reliable sourcing, transparent trade, and consistent quality."],["Our vision","To become a trusted global bridge for Indian agriculture, creating shared growth for growers, partners, and buyers."],["Our values","Trust. Transparency. Quality. Reliability. Clear communication and care at every step of the journey."]].map(([n,d])=><div key={n}><div className="feature-icon"><Sprout/></div><h2 className="text-xl font-semibold">{n}</h2><p className="section-copy mt-4">{d}</p></div>)}</div></section><section className="section-band"><div className="container-wide max-w-4xl"><div className="eyebrow">A message from our founder</div><blockquote className="section-title font-medium">“Our focus remains the same — to be a dependable bridge between Indian markets and the world.”</blockquote><p className="section-copy mt-5">Our commitment to reliability, timely delivery, and clear communication has helped us build lasting relationships with buyers worldwide. As we grow, we never lose sight of the trust you place in us.</p><div className="mt-6"><h3 className="text-sm font-semibold">Mr. Avinash Yadav</h3><p className="mt-1 text-xs text-muted-foreground">Founder · Akvera Universal · Kolhapur, India</p></div><div className="mt-12 grid gap-8 sm:grid-cols-3">{[["Our roots","A belief in trustworthy trade."],["Our journey","Careful sourcing and lasting partnerships."],["Our future","Connecting more Indian growers to global buyers."]].map(([t,d])=><div key={t} className="process-step"><h3 className="text-sm font-semibold">{t}</h3><p className="section-copy mt-2 text-xs">{d}</p></div>)}</div></div></section><CtaBand/></SiteShell>;}
-export function ProductsPage(){const{products}=useDemo();const[query,setQuery]=useState("");const[cat,setCat]=useState("All Products");const[sort,setSort]=useState("featured");let filtered=products.filter(p=>p.status&&(cat==="All Products"||p.category===cat)&&`${p.name} ${p.origin}`.toLowerCase().includes(query.toLowerCase()));if(sort==="name")filtered=[...filtered].sort((a,b)=>a.name.localeCompare(b.name));return <SiteShell><PageBanner title="Our products" subtitle="The finest of Indian agriculture. Carefully sourced, quality checked, and ready for your market."/><section className="section-band"><div className="container-wide"><div className="mb-8 flex flex-wrap items-center justify-between gap-5"><div className="flex flex-wrap gap-2">{["All Products",...new Set(products.map(p=>p.category))].map(c=><Button key={c} variant={cat===c?"default":"outline"} size="sm" onClick={()=>setCat(c)} className="text-[10px]">{c}</Button>)}</div><div className="flex w-full gap-3 sm:w-auto"><label className="relative min-w-0 flex-1"><Search className="absolute left-3 top-3 text-muted-foreground" size={14}/><input className="field pl-9" aria-label="Search products" placeholder="Search products…" value={query} onChange={e=>setQuery(e.target.value)}/></label><select className="field w-32" value={sort} onChange={e=>setSort(e.target.value)} aria-label="Sort products"><option value="featured">Featured</option><option value="name">Name A–Z</option></select></div></div><p className="mb-5 text-xs text-muted-foreground">{filtered.length} products</p><div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{filtered.map(p=><ProductCard key={p.id} product={p}/>)}</div>{!filtered.length&&<div className="py-16 text-center"><Search className="mx-auto mb-4 text-muted-foreground"/><h2 className="text-lg">No matching products</h2><Button variant="link" onClick={()=>{setQuery("");setCat("All Products");}}>Clear filters</Button></div>}</div></section><CtaBand/></SiteShell>;}
-export function ProductDetailPage({slug}:{slug:string}){const{products,openQuote}=useDemo();const p=products.find(p=>p.id===slug&&p.status);const[view,setView]=useState("Overview");if(!p)return <SiteShell><PageBanner title="Product unavailable" subtitle="This product may have moved or is not currently available."/><div className="container-wide py-16"><Button asChild><Link to="/products">Browse Products<ArrowRight/></Link></Button></div></SiteShell>;function download(){if(!p)return;const content=`AKVERA UNIVERSAL\n${p.name}\n\n${p.description}\nOrigin: ${p.origin}\nPackaging: ${p.packaging}\nAvailability, quality specifications and shipping terms: confirmed on enquiry.\n\nContact info@akverauniversal.com | +91 902 1300 674\nDemo product information sheet. Not a confirmed offer.`;const url=URL.createObjectURL(new Blob([content],{type:"text/plain"}));const a=document.createElement("a");a.href=url;a.download=`${p.id}-brochure.txt`;a.click();URL.revokeObjectURL(url);}return <SiteShell><PageBanner title={p.name} subtitle={`${p.category} · Carefully sourced from ${p.origin}, India`}/><section className="section-band"><div className="container-wide grid gap-12 lg:grid-cols-2"><div><ProductPhoto product={p} className="rounded-md !aspect-square"/><div className="mt-4 grid grid-cols-3 gap-3"><ProductPhoto product={p} className="rounded"/><img src={warehouse} className="h-full w-full rounded object-cover" alt="Inspection and storage" loading="lazy"/><img src={hero} className="h-full w-full rounded object-cover" alt="International sea freight" loading="lazy"/></div></div><div><span className="quality-tag"><ShieldCheck size={12}/>EXPORT QUALITY</span><h2 className="mt-5 text-3xl font-semibold">{p.name}</h2><p className="section-copy mt-4">{p.description}</p><dl className="mt-6 grid grid-cols-[110px_1fr] gap-4 border-y py-6 text-xs"><dt className="text-muted-foreground">Origin</dt><dd>{p.origin}, India</dd><dt className="text-muted-foreground">Packaging</dt><dd>{p.packaging}</dd><dt className="text-muted-foreground">Availability</dt><dd>Confirmed upon enquiry</dd><dt className="text-muted-foreground">Shipping</dt><dd>Sea freight · Terms agreed per order</dd><dt className="text-muted-foreground">Destinations</dt><dd>UAE, Singapore, UK, and more</dd></dl><div className="mt-7 flex flex-wrap gap-3"><Button className="h-11" onClick={()=>openQuote(p.name)}>Request a Quote<ArrowRight/></Button><Button variant="outline" className="h-11" onClick={download}><Download/>Download Brochure</Button></div><p className="mt-4 text-[10px] text-muted-foreground">Product specifications, quantities, and documentation are confirmed before order acceptance.</p><div className="mt-10 flex flex-wrap gap-2 border-b pb-3">{["Overview","Specifications","Packaging","Quality"].map(t=><Button key={t} size="sm" variant={view===t?"default":"ghost"} onClick={()=>setView(t)}>{t}</Button>)}</div><p className="section-copy mt-5">{view==="Overview"?`Sourced with care, ${p.name.toLowerCase()} brings the authentic character of Indian agriculture to your market. Speak to our team about your requirements.`:view==="Specifications"?"Grade, moisture, purity, sizing, and other quality parameters are agreed with the buyer before sourcing. Request a detailed specification sheet for your required variety.":view==="Packaging"?`${p.packaging}. Food-grade packaging, destination labelling, and private-label options can be discussed.`:"Our sourcing and quality process includes product selection, batch inspection, packaging checks, and documentation reviews. Any required certificate is confirmed per order."}</p></div></div></section><section className="section-band bg-muted"><div className="container-wide"><h2 className="section-title">Discover more from India.</h2><div className="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{products.filter(x=>x.id!==slug&&x.status).slice(0,4).map(x=><ProductCard key={x.id} product={x}/>)}</div></div></section></SiteShell>;}
-export function IndustriesPage(){return <SiteShell><PageBanner title="Industries we serve" subtitle="Reliable sourcing for the businesses that bring quality products to the world."/><section className="section-band"><div className="container-wide grid gap-8 sm:grid-cols-2 lg:grid-cols-4">{[[Factory,"Food Industry","Ingredients for food processing and production."],[Store,"Retail","Quality agricultural products for retail shelves."],[Package,"Wholesale","Bulk supply built around your market."],[Truck,"Distributors","Consistent sourcing for your distribution network."],[Globe2,"Importers","A trusted partner for cross-border procurement."],[Factory,"Manufacturers","Dependable raw materials for production."],[Utensils,"Hospitality","Premium ingredients for exceptional experiences."],[Utensils,"Restaurants","Authentic products for kitchens worldwide."]].map(([Icon,n,d])=>{const I=Icon as typeof Factory;return <article key={String(n)} className="rounded-md border bg-card p-7"><div className="feature-icon"><I/></div><h2 className="text-base font-semibold">{String(n)}</h2><p className="section-copy mt-3 text-xs">{String(d)}</p></article>;})}</div></section><CtaBand/></SiteShell>;}
-export function ProcessPage(){const[selected,setSelected]=useState(0);return <SiteShell><PageBanner title="Our export process" subtitle="From sourcing to delivery — a transparent, carefully managed journey."/><section className="section-band"><div className="container-wide grid gap-10 lg:grid-cols-[1fr_1.2fr]"><div className="grid gap-2">{processSteps.map(([n,d],i)=><Button key={n} variant={selected===i?"secondary":"ghost"} className="h-auto justify-start gap-4 whitespace-normal px-5 py-4 text-left" onClick={()=>setSelected(i)}><span className="text-lg font-semibold text-primary">0{i+1}</span><span><span className="block text-sm font-semibold">{n}</span><span className="mt-1 block text-xs font-normal text-muted-foreground">{d}</span></span><ArrowRight className="ml-auto shrink-0"/></Button>)}</div><div><img src={selected<3?warehouse:hero} alt={processSteps[selected][0]} className="aspect-[1.4] w-full rounded-md object-cover" width={900} height={600} loading="lazy"/><div className="mt-7"><div className="eyebrow">Step 0{selected+1}</div><h2 className="section-title">{processSteps[selected][0]}</h2><p className="section-copy mt-3">{processSteps[selected][1]} Our team coordinates the details with you, keeping your product requirements, destination, and agreed timeline in focus. Clear communication is part of every step.</p></div></div></div></section><CtaBand/></SiteShell>;}
-export function QualityPage(){return <SiteShell><PageBanner title="Quality without compromise" subtitle="Careful sourcing. Thorough checks. Confidence in every shipment."/><section className="section-band"><div className="container-wide grid items-center gap-12 lg:grid-cols-2"><div><div className="eyebrow">Our promise to you</div><h2 className="section-title">Quality is never<br/>an afterthought.</h2><p className="section-copy mt-5">Every product goes through careful selection and quality checks. We agree on the standards you need, then work with our sourcing partners to deliver consistency from batch to batch.</p><div className="mt-7 space-y-5">{["Product selection","Batch inspection","Packaging review","Documentation checks"].map(n=><div className="flex items-center gap-3" key={n}><span className="grid size-8 place-items-center rounded-full bg-secondary text-primary"><Check size={15}/></span><span className="text-sm">{n}</span></div>)}</div></div><img src={warehouse} alt="Quality professional inspecting Indian grain" className="about-photo" loading="lazy" width={1200} height={912}/></div></section><section className="section-band bg-muted"><div className="container-wide grid gap-8 sm:grid-cols-2 lg:grid-cols-3">{[["Laboratory testing","Product testing requirements are agreed with buyers and arranged as needed."],["Export standards","Specifications and destination requirements are reviewed before shipment."],["International compliance","Required certificates and documents are confirmed for each order."],["Quality inspection","Careful checks for purity, freshness, appearance, and agreed parameters."],["Secure packaging","Appropriate pack sizes and materials protect products in transit."],["Traceability","Batch information and origin documentation support transparent sourcing."]].map(([n,d])=><article key={n} className="border-b pb-6"><div className="feature-icon"><ShieldCheck/></div><h2 className="text-base font-semibold">{n}</h2><p className="section-copy mt-3 text-xs">{d}</p></article>)}</div><p className="container-wide mt-7 text-[10px] text-muted-foreground">Certificate examples in this demonstration do not represent independently verified company certifications.</p></section><CtaBand/></SiteShell>;}
-const gallery=[{name:"Quality inspection",category:"Quality",src:warehouse},{name:"Global cargo shipping",category:"Exports",src:hero},{name:"India’s finest products",category:"Products",src:collection},{name:"Secure grain storage",category:"Warehouse",src:warehouse},{name:"Ready for global markets",category:"Containers",src:hero},{name:"Carefully selected grains",category:"Packaging",src:collection}];
-export function GalleryPage(){const[filter,setFilter]=useState("All");const[photo,setPhoto]=useState<(typeof gallery)[number]|null>(null);return <SiteShell><PageBanner title="Our world, in pictures" subtitle="A look at the products, people, and journeys behind our exports."/><section className="section-band"><div className="container-wide"><div className="mb-8 flex flex-wrap gap-2">{["All",...gallery.map(p=>p.category)].map(c=><Button key={c} size="sm" variant={filter===c?"default":"outline"} onClick={()=>setFilter(c)}>{c}</Button>)}</div><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{gallery.filter(p=>filter==="All"||p.category===filter).map(p=><Button variant="ghost" key={p.name} className="group relative h-auto overflow-hidden rounded-md p-0" aria-label={`Open ${p.name}`} onClick={()=>setPhoto(p)}><img src={p.src} alt={p.name} loading="lazy" className="aspect-[1.25] w-full object-cover" width={700} height={560}/><span className="absolute bottom-0 left-0 right-0 bg-footer/85 p-4 text-left text-xs text-hero-foreground">{p.name}</span></Button>)}</div><p className="mt-5 text-xs text-muted-foreground">Illustrative images created for this demo portfolio.</p></div></section>{photo&&<Modal title={photo.name} onClose={()=>setPhoto(null)}><img src={photo.src} className="w-full rounded" alt={photo.name}/></Modal>}</SiteShell>;}
-export function BlogPage(){const[q,setQ]=useState("");return <SiteShell><PageBanner title="Insights & perspectives" subtitle="Ideas, practical guides, and perspectives from the world of agricultural exports."/><section className="section-band"><div className="container-wide"><input className="field mb-8 max-w-sm" aria-label="Search articles" placeholder="Search insights…" value={q} onChange={e=>setQ(e.target.value)}/><div className="grid gap-8 md:grid-cols-3">{blogs.filter(b=>`${b.title} ${b.category}`.toLowerCase().includes(q.toLowerCase())).map(b=><Link to="/blog/$slug" params={{slug:b.id}} key={b.id}><img src={b.image==="warehouse"?warehouse:b.image==="products"?collection:hero} alt={b.title} className="aspect-[1.5] w-full rounded-md object-cover" width={700} height={470} loading="lazy"/><p className="mb-3 mt-5 text-[10px] text-primary">{b.category} <span className="ml-3 text-muted-foreground">{b.date}</span></p><h2 className="text-lg font-medium leading-7">{b.title}</h2><p className="section-copy mt-3 text-xs">{b.intro}</p><span className="mt-5 flex items-center gap-2 text-xs font-semibold text-primary">Read More<ArrowRight size={13}/></span></Link>)}</div>{!blogs.some(b=>`${b.title} ${b.category}`.toLowerCase().includes(q.toLowerCase()))&&<p className="py-12 text-muted-foreground">No articles match your search.</p>}</div></section></SiteShell>;}
-export function ArticlePage({slug}:{slug:string}){const b=blogs.find(b=>b.id===slug);if(!b)return <SiteShell><PageBanner title="Article unavailable" subtitle="Explore our latest insights instead."/><div className="container-wide py-16"><Button asChild><Link to="/blog">All Insights</Link></Button></div></SiteShell>;return <SiteShell><article className="container-wide max-w-4xl py-14"><Link to="/blog" className="text-xs text-primary">← All Insights</Link><div className="eyebrow mt-8">{b.category} · {b.date}</div><h1 className="section-title">{b.title}</h1><p className="section-copy mt-5">{b.intro}</p><img src={b.image==="warehouse"?warehouse:b.image==="products"?collection:hero} alt={b.title} className="my-8 aspect-[1.8] w-full rounded-md object-cover" width={1000} height={560}/>{b.body.split(". ").reduce<string[]>((acc,s,i)=>{if(i%2===0)acc.push(s);else acc[acc.length-1]+=". "+s;return acc;},[]).map((p,i)=><p key={i} className="section-copy mb-5">{p.endsWith(".")?p:p+"."}</p>)}<p className="mt-8 text-xs text-muted-foreground">Sample editorial content · Akvera Universal</p></article><CtaBand/></SiteShell>;}
-export function TestimonialsPage(){const[index,setIndex]=useState(0);return <SiteShell><PageBanner title="Partnerships built on trust" subtitle="What working together can look like — across markets and borders."/><section className="section-band"><div className="container-wide"><div className="mx-auto max-w-2xl"><TestimonialCard {...testimonials[index]}/><div className="mt-5 flex justify-center gap-2">{testimonials.map((t,i)=><Button key={t.name} size="icon" variant={index===i?"default":"outline"} onClick={()=>setIndex(i)} aria-label={`Show testimonial ${i+1}`} className="size-7 rounded-full text-[10px]">{i+1}</Button>)}</div></div><div className="mt-14 grid gap-6 md:grid-cols-3">{testimonials.map(t=><TestimonialCard {...t} key={t.name}/>)}</div><p className="mt-6 text-center text-xs text-muted-foreground">Names and reviews are illustrative mock testimonials, not verified customer endorsements.</p></div></section><CtaBand/></SiteShell>;}
-export function FAQPage(){const[open,setOpen]=useState<number|null>(0);const[q,setQ]=useState("");return <SiteShell><PageBanner title="Frequently asked questions" subtitle="A little clarity for your next global partnership."/><section className="section-band"><div className="container-wide max-w-4xl"><input className="field mb-8" aria-label="Search frequently asked questions" placeholder="Search questions…" value={q} onChange={e=>setQ(e.target.value)}/>{faqs.map(([n,d],i)=>({n,d,i})).filter(f=>`${f.n} ${f.d}`.toLowerCase().includes(q.toLowerCase())).map(({n,d,i})=><div className="border-b" key={n}><Button variant="ghost" className="h-auto w-full justify-between whitespace-normal px-0 py-5 text-left text-sm" onClick={()=>setOpen(open===i?null:i)} aria-expanded={open===i} aria-controls={`faq-${i}`}>{n}<ChevronDown className={`ml-4 shrink-0 ${open===i?"rotate-180":""}`}/></Button>{open===i&&<p id={`faq-${i}`} className="section-copy pb-6 pr-8">{d}</p>}</div>)}{!faqs.some(f=>f.join(" ").toLowerCase().includes(q.toLowerCase()))&&<p className="py-10 text-muted-foreground">No questions found.</p>}<div className="mt-12 text-center"><h2 className="text-xl font-medium">Still have a question?</h2><Button variant="link" asChild className="mt-3"><Link to="/contact">Talk to our team<ArrowRight/></Link></Button></div></div></section></SiteShell>;}
-export function ContactPage(){return <SiteShell><PageBanner title="Let’s start a conversation" subtitle="Tell us what you need. We’ll help you find the right products and the right way forward."/><section className="section-band"><div className="container-wide grid gap-14 lg:grid-cols-[1fr_1.25fr]"><div><div className="eyebrow">Your global sourcing partner</div><h2 className="section-title">Closer than you think.</h2><p className="section-copy mt-4">Reach out to Mr. Avinash Yadav and the Akvera Universal team.</p><div className="mt-8 space-y-6">{[[MapPin,"Visit our home","Kolhapur, Maharashtra, India",""],[Phone,"Call us","+91 902 1300 674","tel:+919021300674"],[Mail,"Write to us","info@akverauniversal.com","mailto:info@akverauniversal.com"]].map(([Icon,n,d,href])=>{const I=Icon as typeof Phone;return <div className="flex items-start gap-4" key={String(n)}><div className="feature-icon mb-0 shrink-0"><I size={20}/></div><div><h3 className="text-xs font-medium">{String(n)}</h3>{href?<a href={String(href)} className="mt-2 block break-all text-sm text-primary">{String(d)}</a>:<p className="mt-2 text-sm text-muted-foreground">{String(d)}</p>}</div></div>;})}</div><div className="mt-8 flex items-center justify-between rounded-md border bg-secondary p-5"><div><MapPin className="mb-3 text-primary"/><h3 className="text-sm font-semibold">Kolhapur, Maharashtra</h3><p className="mt-1 text-xs text-muted-foreground">India · Our roots, your global connection</p></div><a href="https://www.google.com/maps/search/Kolhapur+Maharashtra+India" target="_blank" rel="noreferrer" className="text-xs font-semibold text-primary">Open map ↗</a></div></div><div><h2 className="mb-6 text-xl font-medium">Send an enquiry</h2><InquiryForm/></div></div></section></SiteShell>;}
-export function CountriesPage(){const[selected,setSelected]=useState("UAE");return <SiteShell><PageBanner title="Our global reach" subtitle="Connecting Indian agriculture with international opportunity."/><section className="section-band"><div className="container-wide"><div className="grid gap-10 lg:grid-cols-[1.2fr_1fr]"><div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{countries.map(c=><Button variant={c===selected?"default":"outline"} key={c} className="h-14 justify-start whitespace-normal text-xs" onClick={()=>setSelected(c)}><Globe2/>{c}</Button>)}</div><div><img src={hero} alt="International shipping from India" className="aspect-[1.5] w-full rounded-md object-cover" loading="lazy"/><h2 className="mt-6 text-2xl font-semibold">India → {selected}</h2><p className="section-copy mt-3">Discuss product availability, shipping options, packaging, and destination requirements for {selected} with our team.</p><Button asChild className="mt-5"><Link to="/contact">Discuss Your Destination<ArrowRight/></Link></Button></div></div><p className="mt-7 text-xs text-muted-foreground">Destinations shown are a sample network for this demonstration. Shipping availability is confirmed on enquiry.</p></div></section><CtaBand/></SiteShell>;}
-export function LegalPage({kind}:{kind:"privacy"|"terms"|"sitemap"}){const title=kind==="privacy"?"Privacy Policy":kind==="terms"?"Terms & Conditions":"Sitemap";return <SiteShell><PageBanner title={title} subtitle="Akvera Universal · Demo portfolio website"/><section className="section-band"><div className="container-wide max-w-4xl">{kind==="sitemap"?<div className="grid gap-4 sm:grid-cols-3">{[...([ ["Home","/"],["About","/about"],["Products","/products"],["Industries","/industries"],["Export Process","/export-process"],["Quality","/quality"],["Gallery","/gallery"],["Blog","/blog"],["Testimonials","/testimonials"],["FAQ","/faq"],["Contact","/contact"],["Countries","/countries"] ] as const)].map(([n,p])=><Link to={p} key={p} className="text-sm text-primary">{n} →</Link>)}</div>:<><h2 className="text-xl font-semibold">{kind==="privacy"?"Your information":"Using this demonstration"}</h2><p className="section-copy mt-4">{kind==="privacy"?"This demo stores submitted enquiries, quotations, newsletter subscriptions, and administrator changes in temporary browser memory for the current session only. No server receives your submissions, and no marketing emails are sent. Refreshing the page resets the demo data. Do not submit confidential or sensitive information.":"This website is a portfolio demonstration. Product listings, client reviews, destination networks, dashboard metrics, and sample certificates are illustrative. They are not binding offers or independently verified claims. All commercial specifications, certifications, payment terms, and shipping arrangements must be confirmed directly with Akvera Universal before an order is placed."}</p><h2 className="mt-8 text-xl font-semibold">External links</h2><p className="section-copy mt-4">WhatsApp and map links open third-party services that have their own terms and privacy policies.</p><h2 className="mt-8 text-xl font-semibold">Contact</h2><p className="section-copy mt-4">For questions, contact info@akverauniversal.com or +91 902 1300 674.</p></>}</div></section></SiteShell>;}
+const getAssetUrl = (asset: unknown, fallback: string) =>
+  typeof asset === "object" && asset && "url" in asset
+    ? (asset as { url: string }).url
+    : String(asset || fallback);
+
+export function AboutPage() {
+  const warehouse = getAssetUrl(
+    warehouseAsset,
+    "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=1200&q=80"
+  );
+
+  return (
+    <SiteShell>
+      <PageBanner
+        title="Our Story & Heritage"
+        subtitle="Rooted in Indian agriculture. Built on transparent trade. Connected to the world."
+      />
+
+      {/* Company Story & Founder Message */}
+      <section className="section-band">
+        <div className="container-wide grid items-center gap-12 lg:grid-cols-2">
+          <div className="relative">
+            <img
+              src={warehouse}
+              alt="Careful agricultural quality inspection in Maharashtra"
+              className="about-photo w-full rounded-2xl object-cover shadow-xl"
+              width={1200}
+              height={912}
+              loading="lazy"
+            />
+            <div className="about-badge absolute -bottom-6 -left-6 rounded-2xl border-4 border-background bg-primary p-6 text-primary-foreground shadow-2xl">
+              <span className="block font-display text-2xl font-bold text-accent">Mr. Avinash Yadav</span>
+              <span className="mt-1 block text-xs font-semibold">Founder & Managing Director</span>
+              <p className="mt-2 text-[11px] opacity-80">Kolhapur, Maharashtra, India</p>
+            </div>
+          </div>
+
+          <div>
+            <div className="eyebrow">Akvera Universal Exporter</div>
+            <h2 className="section-title text-3xl font-extrabold sm:text-4xl">
+              A Dependable Bridge Between Indian Markets and the World.
+            </h2>
+            <p className="section-copy mt-5 text-sm leading-relaxed text-muted-foreground">
+              {companyInfo.introduction}
+            </p>
+            <p className="section-copy mt-3 text-sm leading-relaxed text-muted-foreground">
+              Operating out of Kolhapur, Maharashtra—a region renowned for agricultural abundance—we bridge the gap
+              between diligent Indian farming communities and global food importers requiring consistent Sortex
+              specifications, reliable moisture control, and international phytosanitary certificates.
+            </p>
+
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-xl border bg-card p-4 shadow-sm">
+                <span className="text-xs font-bold uppercase tracking-wider text-primary">Core Value</span>
+                <h3 className="mt-1 text-sm font-bold">Uncompromising Quality</h3>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Sortex optical sorting and independent pre-shipment laboratory inspections on every batch.
+                </p>
+              </div>
+              <div className="rounded-xl border bg-card p-4 shadow-sm">
+                <span className="text-xs font-bold uppercase tracking-wider text-accent">Core Value</span>
+                <h3 className="mt-1 text-sm font-bold">Absolute Transparency</h3>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Clear proforma terms, transparent freight costs, and real-time container transit notices.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Mission, Vision & Core Values */}
+      <section className="section-band bg-muted/40">
+        <div className="container-wide">
+          <div className="text-center">
+            <p className="eyebrow mx-auto justify-center">Guiding Principles</p>
+            <h2 className="section-title text-3xl font-bold">Mission, Vision & Core Values</h2>
+          </div>
+
+          <div className="mt-10 grid gap-8 md:grid-cols-3">
+            {[
+              [
+                "Our Mission",
+                "To connect international buyers with India's finest agricultural products through dependable sourcing, ethical contracts, and consistent quality.",
+                Sprout,
+              ],
+              [
+                "Our Vision",
+                "To be the benchmark Indian agro-export partner recognized globally for integrity, traceability, and customer-first execution.",
+                Globe2,
+              ],
+              [
+                "Our Core Values",
+                "Trust, Transparency, Quality, Timely Delivery, and Clear Communication at every touchpoint from farm gate to ocean vessel.",
+                ShieldCheck,
+              ],
+            ].map(([title, desc, Icon]) => {
+              const I = Icon as typeof Sprout;
+              return (
+                <div key={title as string} className="rounded-2xl border bg-card p-8 shadow-sm">
+                  <div className="feature-icon mb-4 grid size-12 place-items-center rounded-xl bg-secondary text-primary">
+                    <I size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold">{title as string}</h3>
+                  <p className="section-copy mt-3 text-xs leading-relaxed sm:text-sm">{desc as string}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Cards */}
+      <section className="section-band">
+        <div className="container-wide">
+          <div className="text-center">
+            <p className="eyebrow mx-auto justify-center">Why Partner With Akvera</p>
+            <h2 className="section-title text-3xl font-bold">Engineered for International Standards</h2>
+          </div>
+
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {whyChooseUs.map((item) => (
+              <div
+                key={item.title}
+                className="group rounded-xl border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary hover:shadow-md"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="grid size-8 place-items-center rounded-full bg-secondary text-primary font-bold">
+                    ✓
+                  </span>
+                  <h3 className="text-base font-bold text-foreground transition-colors group-hover:text-primary">
+                    {item.title}
+                  </h3>
+                </div>
+                <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Leadership & Executive Team */}
+      <section className="section-band bg-muted/40">
+        <div className="container-wide">
+          <div className="text-center">
+            <p className="eyebrow mx-auto justify-center">Leadership Team</p>
+            <h2 className="section-title text-3xl font-bold">The People Behind Akvera Universal</h2>
+            <p className="section-copy mx-auto mt-2 max-w-xl text-xs sm:text-sm">
+              Experienced agronomists, international trade specialists, and maritime logistics coordinators.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {teamMembers.map((member) => (
+              <div key={member.id} className="rounded-xl border bg-card p-6 shadow-sm">
+                <div className="grid size-14 place-items-center rounded-2xl bg-secondary font-bold text-lg text-primary">
+                  {member.name
+                    .split(" ")
+                    .map((s) => s[0])
+                    .slice(0, 2)
+                    .join("")}
+                </div>
+                <h3 className="mt-4 text-base font-bold text-foreground">{member.name}</h3>
+                <p className="text-xs font-semibold text-primary">{member.role}</p>
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{member.bio}</p>
+                <div className="mt-4 border-t pt-3 text-[11px] text-muted-foreground space-y-1">
+                  <p className="flex items-center gap-1.5">
+                    <MapPin size={12} className="text-accent" /> {member.location}
+                  </p>
+                  <p className="text-accent font-medium">{member.experience}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <CtaBand />
+    </SiteShell>
+  );
+}
+
+export function ProductsPage() {
+  const { products } = useDemo();
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("All Products");
+  const [sort, setSort] = useState("featured");
+
+  const categories = ["All Products", ...new Set(products.map((p) => p.category))];
+
+  let filtered = products.filter(
+    (p) =>
+      p.status &&
+      (category === "All Products" || p.category === category) &&
+      `${p.name} ${p.origin} ${p.description} ${p.category}`.toLowerCase().includes(query.toLowerCase())
+  );
+
+  if (sort === "name") {
+    filtered = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sort === "category") {
+    filtered = [...filtered].sort((a, b) => a.category.localeCompare(b.category));
+  }
+
+  return (
+    <SiteShell>
+      <PageBanner
+        title="Our Export Catalogue"
+        subtitle="16+ premium agro commodities sourced directly from origin, Sortex graded, and packaged for global transit."
+      />
+
+      <section className="section-band">
+        <div className="container-wide">
+          {/* Controls Bar */}
+          <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+            {/* Category Pills */}
+            <div className="flex flex-wrap gap-2">
+              {categories.map((c) => (
+                <Button
+                  key={c}
+                  variant={category === c ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setCategory(c)}
+                  className="text-xs font-semibold"
+                >
+                  {c}
+                </Button>
+              ))}
+            </div>
+
+            {/* Search & Sort */}
+            <div className="flex flex-wrap gap-3 sm:w-auto">
+              <label className="relative min-w-0 flex-1 sm:w-64">
+                <Search className="absolute left-3 top-3 text-muted-foreground" size={15} />
+                <input
+                  className="field pl-9 text-xs"
+                  aria-label="Search products"
+                  placeholder="Search rice, spices, wheat..."
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+              </label>
+
+              <select
+                className="field w-36 text-xs"
+                value={sort}
+                onChange={(e) => setSort(e.target.value)}
+                aria-label="Sort products"
+              >
+                <option value="featured">Featured Order</option>
+                <option value="name">Name A–Z</option>
+                <option value="category">Category</option>
+              </select>
+            </div>
+          </div>
+
+          <p className="mb-6 text-xs font-medium text-muted-foreground">
+            Displaying {filtered.length} export-grade products
+          </p>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {filtered.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+
+          {!filtered.length && (
+            <div className="py-20 text-center">
+              <Search className="mx-auto mb-4 size-10 text-muted-foreground" />
+              <h3 className="text-lg font-bold">No matching products found</h3>
+              <p className="mt-1 text-xs text-muted-foreground">Try adjusting your search query or category filter.</p>
+              <Button
+                variant="link"
+                onClick={() => {
+                  setQuery("");
+                  setCategory("All Products");
+                }}
+                className="mt-3 text-xs"
+              >
+                Clear all filters
+              </Button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <CtaBand />
+    </SiteShell>
+  );
+}
+
+export function ProductDetailPage({ slug }: { slug: string }) {
+  const { products, openQuote } = useDemo();
+  const p = products.find((item) => item.id === slug && item.status);
+  const [activeTab, setActiveTab] = useState<"specifications" | "packaging" | "shipping" | "quality">(
+    "specifications"
+  );
+
+  const hero = getAssetUrl(
+    heroAsset,
+    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80"
+  );
+  const warehouse = getAssetUrl(
+    warehouseAsset,
+    "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=1200&q=80"
+  );
+
+  if (!p) {
+    return (
+      <SiteShell>
+        <PageBanner
+          title="Product Unavailable"
+          subtitle="The requested agro commodity record could not be found or has been updated."
+        />
+        <div className="container-wide py-16 text-center">
+          <Button asChild>
+            <Link to="/products">
+              Return to Products Catalogue <ArrowRight size={15} />
+            </Link>
+          </Button>
+        </div>
+      </SiteShell>
+    );
+  }
+
+  function downloadBrochure() {
+    if (!p) return;
+    const content = `AKVERA UNIVERSAL EXPORTER
+Kolhapur, Maharashtra, India
+Phone: +91 902 1300 674 | Email: info@akverauniversal.com
+Web: https://akverauniversal.com
+
+============================================================
+OFFICIAL PRODUCT SPECIFICATION SHEET
+============================================================
+
+Product Name: ${p.name}
+Category: ${p.category}
+Origin: ${p.origin}
+Export Quality Grade: ${p.qualityGrade}
+Availability: ${p.availability}
+Shipping Terms: ${p.shippingTerms}
+Packaging Options: ${p.packaging}
+Export Destinations: ${p.countriesExported?.join(", ") || "Global Markets"}
+
+DESCRIPTION:
+${p.description}
+
+TECHNICAL SPECIFICATIONS:
+${p.specifications?.map((s) => `- ${s.label}: ${s.value}`).join("\n") || "Available on request"}
+
+FOOD SAFETY & CERTIFICATION STANDARDS:
+${p.qualityStandards}
+
+For commercial contract enquiries, container bookings, and forward price quotes:
+Contact: Mr. Avinash Yadav (Managing Director)
+Direct Phone / WhatsApp: +91 902 1300 674
+Email: info@akverauniversal.com
+============================================================
+Akvera Universal Exporter · Built on Trust, Transparency & Quality.
+`;
+
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Akvera-Universal-${p.id}-Specification.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  const related = products.filter((x) => x.id !== slug && x.status).slice(0, 4);
+
+  return (
+    <SiteShell>
+      <PageBanner
+        title={p.name}
+        subtitle={`${p.category} · Export grade commodity sourced from ${p.origin}`}
+      />
+
+      <section className="section-band">
+        <div className="container-wide grid gap-12 lg:grid-cols-2">
+          {/* Gallery View */}
+          <div>
+            <div className="overflow-hidden rounded-2xl border bg-muted shadow-md">
+              <ProductPhoto product={p} className="!aspect-square w-full" />
+            </div>
+            <div className="mt-4 grid grid-cols-3 gap-3">
+              <div className="overflow-hidden rounded-xl border">
+                <ProductPhoto product={p} className="!aspect-video w-full" />
+              </div>
+              <div className="overflow-hidden rounded-xl border">
+                <img src={warehouse} alt="Storage and inspection" className="h-full w-full object-cover" />
+              </div>
+              <div className="overflow-hidden rounded-xl border">
+                <img src={hero} alt="Maritime export logistics" className="h-full w-full object-cover" />
+              </div>
+            </div>
+          </div>
+
+          {/* Details & Specs */}
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="rounded-full bg-secondary px-3 py-1 text-xs font-bold text-primary">
+                {p.category}
+              </span>
+              <span className="rounded-full bg-accent/20 px-3 py-1 text-xs font-bold text-accent">
+                {p.qualityGrade}
+              </span>
+            </div>
+
+            <h2 className="mt-4 text-3xl font-extrabold sm:text-4xl text-foreground">{p.name}</h2>
+            <p className="section-copy mt-4 text-sm leading-relaxed text-muted-foreground">{p.description}</p>
+
+            <dl className="mt-6 grid grid-cols-[130px_1fr] gap-3 border-y py-6 text-xs">
+              <dt className="font-semibold text-muted-foreground">Origin</dt>
+              <dd className="font-medium text-foreground">{p.origin}</dd>
+              <dt className="font-semibold text-muted-foreground">Packaging</dt>
+              <dd className="font-medium text-foreground">{p.packaging}</dd>
+              <dt className="font-semibold text-muted-foreground">Availability</dt>
+              <dd className="font-medium text-primary">{p.availability}</dd>
+              <dt className="font-semibold text-muted-foreground">Shipping Terms</dt>
+              <dd className="font-medium text-foreground">{p.shippingTerms}</dd>
+              <dt className="font-semibold text-muted-foreground">Top Destinations</dt>
+              <dd className="font-medium text-foreground">{p.countriesExported?.join(", ")}</dd>
+            </dl>
+
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Button onClick={() => openQuote(p.name)} className="h-12 px-7 font-semibold">
+                Request an Export Quote <ArrowRight size={16} />
+              </Button>
+              <Button variant="outline" onClick={downloadBrochure} className="h-12 px-6 font-semibold">
+                <Download size={16} /> Download Brochure
+              </Button>
+            </div>
+
+            {/* Interactive Tabs */}
+            <div className="mt-10 border-b">
+              <div className="flex flex-wrap gap-3">
+                {[
+                  ["specifications", "Specifications"],
+                  ["packaging", "Packaging Options"],
+                  ["shipping", "Shipping & Incoterms"],
+                  ["quality", "Quality Standards"],
+                ].map(([tabKey, label]) => (
+                  <button
+                    key={tabKey}
+                    type="button"
+                    onClick={() => setActiveTab(tabKey as typeof activeTab)}
+                    className={`border-b-2 pb-3 text-xs font-bold transition-colors ${
+                      activeTab === tabKey
+                        ? "border-primary text-primary"
+                        : "border-transparent text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-xl border bg-card p-6 shadow-sm">
+              {activeTab === "specifications" && (
+                <div>
+                  <h3 className="text-sm font-bold text-foreground">Technical Crop Specifications</h3>
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2 text-xs">
+                    {p.specifications?.map((spec) => (
+                      <div key={spec.label} className="rounded-lg bg-muted/50 p-3">
+                        <span className="text-muted-foreground">{spec.label}</span>
+                        <p className="mt-1 font-bold text-foreground">{spec.value}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "packaging" && (
+                <div>
+                  <h3 className="text-sm font-bold text-foreground">Packaging & Private Labelling</h3>
+                  <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                    Available in {p.packaging}. Customized packaging options include multi-wall kraft paper sacks,
+                    BOPP printed bags, vacuum nitrogen flushed pouches, and container jumbo totes. We accommodate buyer
+                    branding, barcodes, and destination language nutritional labeling.
+                  </p>
+                </div>
+              )}
+
+              {activeTab === "shipping" && (
+                <div>
+                  <h3 className="text-sm font-bold text-foreground">Ocean Logistics & Incoterms</h3>
+                  <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                    Exported under {p.shippingTerms}. Container stuffing is conducted under supervised port storage at
+                    Nhava Sheva (JNPT) or Mundra port. Active temperature tracking in 40ft reefer containers is
+                    deployed for fresh perishables.
+                  </p>
+                </div>
+              )}
+
+              {activeTab === "quality" && (
+                <div>
+                  <h3 className="text-sm font-bold text-foreground">Food Safety & Compliance</h3>
+                  <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                    Compliant with {p.qualityStandards}. Each consignment is accompanied by a Certificate of Origin,
+                    Phytosanitary inspection, and independent laboratory test results from SGS or Bureau Veritas.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Related Products */}
+      <section className="section-band bg-muted/40">
+        <div className="container-wide">
+          <h2 className="section-title text-2xl font-bold">Related Indian Agro Products</h2>
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {related.map((prod) => (
+              <ProductCard key={prod.id} product={prod} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <CtaBand />
+    </SiteShell>
+  );
+}
+
+export function IndustriesPage() {
+  const icons = [Factory, Store, Package, Truck, Globe2, Factory, Utensils, Utensils];
+
+  return (
+    <SiteShell>
+      <PageBanner
+        title="Industries We Serve"
+        subtitle="Customized procurement contracts, private labelling, and reliable scheduling for diverse commercial sectors."
+      />
+
+      <section className="section-band">
+        <div className="container-wide grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {industriesServed.map((item, i) => {
+            const Icon = icons[i % icons.length];
+            return (
+              <article key={item.name} className="rounded-xl border bg-card p-7 shadow-sm">
+                <div className="feature-icon mb-4 grid size-12 place-items-center rounded-xl bg-secondary text-primary">
+                  <Icon size={24} />
+                </div>
+                <h2 className="text-lg font-bold text-foreground">{item.name}</h2>
+                <p className="section-copy mt-3 text-xs leading-relaxed">{item.description}</p>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <CtaBand />
+    </SiteShell>
+  );
+}
+
+export function ProcessPage() {
+  const [selected, setSelected] = useState(0);
+
+  const hero = getAssetUrl(
+    heroAsset,
+    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80"
+  );
+  const warehouse = getAssetUrl(
+    warehouseAsset,
+    "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=1200&q=80"
+  );
+
+  return (
+    <SiteShell>
+      <PageBanner
+        title="Our 7-Step Export Process"
+        subtitle="From farm sourcing to destination delivery — an orchestrated, transparent, quality-checked journey."
+      />
+
+      <section className="section-band">
+        <div className="container-wide grid gap-10 lg:grid-cols-[1fr_1.25fr]">
+          <div className="space-y-3">
+            {processSteps.map(([title, desc], idx) => (
+              <button
+                key={title}
+                type="button"
+                onClick={() => setSelected(idx)}
+                className={`flex w-full items-center justify-between rounded-xl border p-4 text-left transition-all ${
+                  selected === idx
+                    ? "border-primary bg-primary text-primary-foreground shadow-md"
+                    : "border-border bg-card text-foreground hover:bg-muted"
+                }`}
+              >
+                <div className="flex items-center gap-3.5">
+                  <span
+                    className={`grid size-7 place-items-center rounded-full text-xs font-bold ${
+                      selected === idx ? "bg-accent text-primary" : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    0{idx + 1}
+                  </span>
+                  <div>
+                    <h3 className="text-sm font-bold">{title}</h3>
+                    <p className={`line-clamp-1 text-xs ${selected === idx ? "opacity-85" : "text-muted-foreground"}`}>
+                      {desc}
+                    </p>
+                  </div>
+                </div>
+                <ArrowRight size={16} />
+              </button>
+            ))}
+          </div>
+
+          <div>
+            <img
+              src={selected < 3 ? warehouse : hero}
+              alt={processSteps[selected][0]}
+              className="aspect-[1.5] w-full rounded-2xl object-cover shadow-lg"
+              width={900}
+              height={600}
+              loading="lazy"
+            />
+            <div className="mt-8 rounded-2xl border bg-card p-6 shadow-sm">
+              <span className="inline-flex items-center gap-2 rounded-full bg-secondary px-3 py-1 text-xs font-bold text-primary">
+                STAGE 0{selected + 1} OF 07
+              </span>
+              <h2 className="mt-3 text-2xl font-bold">{processSteps[selected][0]}</h2>
+              <p className="section-copy mt-3 text-sm leading-relaxed">{processSteps[selected][1]}</p>
+              <div className="mt-5 space-y-2 border-t pt-4 text-xs text-muted-foreground">
+                <p className="flex items-center gap-2">
+                  <Check className="size-4 text-primary" /> Supervised execution and digital milestone logging
+                </p>
+                <p className="flex items-center gap-2">
+                  <Check className="size-4 text-primary" /> Pre-shipment laboratory analysis and phytosanitary clearance
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <CtaBand />
+    </SiteShell>
+  );
+}
+
+export function QualityPage() {
+  const warehouse = getAssetUrl(
+    warehouseAsset,
+    "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=1200&q=80"
+  );
+
+  return (
+    <SiteShell>
+      <PageBanner
+        title="Quality Assurance & Compliance"
+        subtitle="Laboratory testing, Sortex purity, strict moisture calibrations, and international certification standards."
+      />
+
+      <section className="section-band">
+        <div className="container-wide grid items-center gap-12 lg:grid-cols-2">
+          <div>
+            <p className="eyebrow">Our Unshakable Pledge</p>
+            <h2 className="section-title text-3xl font-extrabold sm:text-4xl">
+              Quality is Never An Afterthought.
+            </h2>
+            <p className="section-copy mt-5 text-sm leading-relaxed text-muted-foreground">
+              Every agro commodity consigned through Akvera Universal undergoes strict physical grading, optical
+              sorting, and laboratory testing. We align crop parameters with destination food authorities prior to
+              contract acceptance.
+            </p>
+
+            <div className="mt-8 space-y-5">
+              <div>
+                <div className="flex justify-between text-xs font-bold">
+                  <span>Sortex Cleaned Optical Purity</span>
+                  <span className="text-primary">99.8%</span>
+                </div>
+                <div className="mt-2 h-2.5 w-full rounded-full bg-muted overflow-hidden">
+                  <div className="h-full rounded-full bg-primary w-[99.8%]" />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs font-bold">
+                  <span>Moisture Tolerance Parameter</span>
+                  <span className="text-primary">100% Export Compliant</span>
+                </div>
+                <div className="mt-2 h-2.5 w-full rounded-full bg-muted overflow-hidden">
+                  <div className="h-full rounded-full bg-leaf w-[100%]" />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs font-bold">
+                  <span>Aflatoxin & Heavy Metals Screening</span>
+                  <span className="text-primary">Zero Tolerance</span>
+                </div>
+                <div className="mt-2 h-2.5 w-full rounded-full bg-muted overflow-hidden">
+                  <div className="h-full rounded-full bg-accent w-[100%]" />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs font-bold">
+                  <span>Container Stuffing Inspection Pass Rate</span>
+                  <span className="text-primary">99.5%</span>
+                </div>
+                <div className="mt-2 h-2.5 w-full rounded-full bg-muted overflow-hidden">
+                  <div className="h-full rounded-full bg-primary w-[99.5%]" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <img
+            src={warehouse}
+            alt="Quality inspection at Akvera Universal"
+            className="about-photo w-full rounded-2xl object-cover shadow-xl"
+            width={1200}
+            height={912}
+            loading="lazy"
+          />
+        </div>
+      </section>
+
+      {/* 6 Inspection Pillars */}
+      <section className="section-band bg-muted/40">
+        <div className="container-wide">
+          <div className="text-center">
+            <p className="eyebrow mx-auto justify-center">Quality Framework</p>
+            <h2 className="section-title text-3xl font-bold">Six Pillars of Quality Verification</h2>
+          </div>
+
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              ["Laboratory Testing", "Full chemical, microbial, moisture, and seed purity testing arranged via SGS or Geo-Chem."],
+              ["Quality Inspection", "Optical color-sorting and foreign matter removal eliminating discolored grains and dust."],
+              ["Export Standards", "Adherence to US FDA, European Union, and Gulf GSO standard commodity parameters."],
+              ["Packaging Integrity", "Multi-wall kraft paper, heavy-duty PP sacks, and vacuum packing to prevent humidity damage."],
+              ["International Compliance", "Phytosanitary inspection, Fumigation certificates, and Chamber of Commerce Origin documentation."],
+              ["Traceability", "Complete farm-gate and batch traceability ensuring unadulterated single-origin consistency."],
+            ].map(([title, desc]) => (
+              <article key={title} className="rounded-xl border bg-card p-6 shadow-sm">
+                <div className="feature-icon mb-4 grid size-10 place-items-center rounded-lg bg-secondary text-primary">
+                  <ShieldCheck size={20} />
+                </div>
+                <h3 className="text-base font-bold">{title}</h3>
+                <p className="section-copy mt-2 text-xs leading-relaxed">{desc}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <CtaBand />
+    </SiteShell>
+  );
+}
+
+export function GalleryPage() {
+  const [filter, setFilter] = useState("All");
+  const [modalItem, setModalItem] = useState<(typeof galleryItems)[number] | null>(null);
+
+  const hero = getAssetUrl(
+    heroAsset,
+    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80"
+  );
+  const warehouse = getAssetUrl(
+    warehouseAsset,
+    "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=1200&q=80"
+  );
+  const collection = getAssetUrl(
+    collectionAsset,
+    "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1200&q=80"
+  );
+
+  const getImage = (key: string) => {
+    if (key === "warehouse") return warehouse;
+    if (key === "collection") return collection;
+    return hero;
+  };
+
+  const categories = ["All", ...new Set(galleryItems.map((g) => g.category))];
+  const items = filter === "All" ? galleryItems : galleryItems.filter((g) => g.category === filter);
+
+  return (
+    <SiteShell>
+      <PageBanner
+        title="Modern Masonry Gallery"
+        subtitle="A visual journey across our warehouse operations, packaging lines, export container terminals, and products."
+      />
+
+      <section className="section-band">
+        <div className="container-wide">
+          <div className="mb-8 flex flex-wrap gap-2">
+            {categories.map((c) => (
+              <Button
+                key={c}
+                size="sm"
+                variant={filter === c ? "default" : "outline"}
+                onClick={() => setFilter(c)}
+                className="text-xs font-semibold"
+              >
+                {c}
+              </Button>
+            ))}
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {items.map((item) => (
+              <article
+                key={item.id}
+                className="group relative cursor-pointer overflow-hidden rounded-2xl border bg-card shadow-sm transition-all hover:shadow-lg"
+                onClick={() => setModalItem(item)}
+              >
+                <div className="aspect-[1.3] overflow-hidden bg-muted">
+                  <img
+                    src={getImage(item.imageKey)}
+                    alt={item.title}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <div className="p-4">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                    {item.category}
+                  </span>
+                  <h3 className="mt-1 text-sm font-bold text-foreground">{item.title}</h3>
+                  <p className="mt-1 text-xs text-muted-foreground line-clamp-2">{item.description}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {modalItem && (
+        <Modal title={modalItem.title} onClose={() => setModalItem(null)}>
+          <div className="overflow-hidden rounded-xl">
+            <img src={getImage(modalItem.imageKey)} alt={modalItem.title} className="w-full object-cover" />
+          </div>
+          <div className="mt-4">
+            <span className="rounded bg-secondary px-2.5 py-0.5 text-xs font-bold text-primary">
+              {modalItem.category}
+            </span>
+            <p className="mt-3 text-sm text-foreground">{modalItem.description}</p>
+          </div>
+        </Modal>
+      )}
+
+      <CtaBand />
+    </SiteShell>
+  );
+}
+
+export function BlogPage() {
+  const [query, setQuery] = useState("");
+
+  const hero = getAssetUrl(
+    heroAsset,
+    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80"
+  );
+  const warehouse = getAssetUrl(
+    warehouseAsset,
+    "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=1200&q=80"
+  );
+  const collection = getAssetUrl(
+    collectionAsset,
+    "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1200&q=80"
+  );
+
+  const getImage = (key: string) => {
+    if (key === "warehouse") return warehouse;
+    if (key === "products") return collection;
+    return hero;
+  };
+
+  const filtered = blogs.filter((b) =>
+    `${b.title} ${b.category} ${b.intro}`.toLowerCase().includes(query.toLowerCase())
+  );
+
+  return (
+    <SiteShell>
+      <PageBanner
+        title="Agro Export Insights & Guides"
+        subtitle="Practical export guides, maritime container packaging tips, and international commodity market updates."
+      />
+
+      <section className="section-band">
+        <div className="container-wide">
+          <div className="mb-8 max-w-sm">
+            <input
+              className="field text-xs"
+              placeholder="Search insights..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-3">
+            {filtered.map((blog) => (
+              <article key={blog.id} className="flex flex-col justify-between rounded-xl border bg-card p-5 shadow-sm">
+                <div>
+                  <div className="aspect-[1.6] overflow-hidden rounded-lg bg-muted">
+                    <img
+                      src={getImage(blog.image)}
+                      alt={blog.title}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="mt-4 flex items-center justify-between text-[11px] font-semibold text-primary">
+                    <span>{blog.category}</span>
+                    <span className="text-muted-foreground">{blog.readTime}</span>
+                  </div>
+                  <h2 className="mt-2 text-base font-bold text-foreground">
+                    <Link to="/blog/$slug" params={{ slug: blog.id }}>
+                      {blog.title}
+                    </Link>
+                  </h2>
+                  <p className="mt-2 text-xs leading-relaxed text-muted-foreground line-clamp-3">{blog.intro}</p>
+                </div>
+
+                <div className="mt-5 border-t pt-4 flex items-center justify-between">
+                  <span className="text-[11px] text-muted-foreground">{blog.date}</span>
+                  <Link
+                    to="/blog/$slug"
+                    params={{ slug: blog.id }}
+                    className="flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+                  >
+                    Read More <ArrowRight size={13} />
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <CtaBand />
+    </SiteShell>
+  );
+}
+
+export function ArticlePage({ slug }: { slug: string }) {
+  const b = blogs.find((item) => item.id === slug);
+
+  const hero = getAssetUrl(
+    heroAsset,
+    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80"
+  );
+  const warehouse = getAssetUrl(
+    warehouseAsset,
+    "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=1200&q=80"
+  );
+  const collection = getAssetUrl(
+    collectionAsset,
+    "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1200&q=80"
+  );
+
+  const getImage = (key: string) => {
+    if (key === "warehouse") return warehouse;
+    if (key === "products") return collection;
+    return hero;
+  };
+
+  if (!b) {
+    return (
+      <SiteShell>
+        <PageBanner title="Article Unavailable" subtitle="The requested editorial article was not found." />
+        <div className="container-wide py-16 text-center">
+          <Button asChild>
+            <Link to="/blog">All Insights</Link>
+          </Button>
+        </div>
+      </SiteShell>
+    );
+  }
+
+  return (
+    <SiteShell>
+      <article className="container-wide max-w-4xl py-14">
+        <Link to="/blog" className="text-xs font-semibold text-primary hover:underline">
+          ← Back to All Articles
+        </Link>
+        <div className="eyebrow mt-6">
+          {b.category} · {b.date} · {b.readTime}
+        </div>
+        <h1 className="text-3xl font-extrabold sm:text-4xl text-foreground leading-tight">{b.title}</h1>
+        <p className="mt-3 text-xs font-semibold text-muted-foreground">Author: {b.author}</p>
+        <p className="section-copy mt-4 text-base font-medium">{b.intro}</p>
+
+        <img
+          src={getImage(b.image)}
+          alt={b.title}
+          className="my-8 aspect-[1.8] w-full rounded-2xl object-cover shadow-lg"
+        />
+
+        <div className="space-y-5 text-sm leading-relaxed text-foreground/90">
+          {b.body.split("\n\n").map((para, i) => (
+            <p key={i}>{para}</p>
+          ))}
+        </div>
+      </article>
+
+      <CtaBand />
+    </SiteShell>
+  );
+}
+
+export function TestimonialsPage() {
+  const [index, setIndex] = useState(0);
+
+  return (
+    <SiteShell>
+      <PageBanner
+        title="Global Client Testimonials"
+        subtitle="Trusted relationships across UAE, Saudi Arabia, Singapore, UK, USA, Italy, and Canada."
+      />
+
+      <section className="section-band">
+        <div className="container-wide">
+          {/* Active Highlight */}
+          <div className="mx-auto max-w-3xl">
+            <TestimonialCard {...testimonials[index]} />
+            <div className="mt-6 flex justify-center gap-2">
+              {testimonials.map((t, i) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setIndex(i)}
+                  className={`size-3 rounded-full transition-all ${
+                    index === i ? "w-8 bg-primary" : "bg-muted-foreground/30"
+                  }`}
+                  aria-label={`Show testimonial ${i + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Grid of All Testimonials */}
+          <div className="mt-16 grid gap-6 md:grid-cols-3">
+            {testimonials.map((t) => (
+              <TestimonialCard key={t.id} {...t} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <CtaBand />
+    </SiteShell>
+  );
+}
+
+export function FAQPage() {
+  const [open, setOpen] = useState<number | null>(0);
+  const [query, setQuery] = useState("");
+
+  const filtered = faqList.filter((f) =>
+    `${f.question} ${f.answer} ${f.category}`.toLowerCase().includes(query.toLowerCase())
+  );
+
+  return (
+    <SiteShell>
+      <PageBanner
+        title="15 Frequently Asked Questions"
+        subtitle="Full transparency on ordering, laboratory inspections, ocean shipping terms, and payment methods."
+      />
+
+      <section className="section-band">
+        <div className="container-wide max-w-4xl">
+          <input
+            className="field mb-8 text-xs"
+            placeholder="Search FAQs by question or keyword..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+
+          <div className="divide-y rounded-2xl border bg-card p-6 shadow-sm">
+            {filtered.map((item, i) => (
+              <div key={item.id} className="py-4 first:pt-0 last:pb-0">
+                <button
+                  type="button"
+                  onClick={() => setOpen(open === i ? null : i)}
+                  className="flex w-full items-center justify-between gap-4 text-left text-sm font-bold text-foreground transition-colors hover:text-primary"
+                  aria-expanded={open === i}
+                >
+                  <span>
+                    <span className="mr-2 text-primary">Q{item.id}.</span> {item.question}
+                  </span>
+                  <ChevronDown
+                    size={18}
+                    className={`shrink-0 transition-transform ${open === i ? "rotate-180 text-primary" : ""}`}
+                  />
+                </button>
+                {open === i && (
+                  <p className="mt-3 text-xs leading-relaxed text-muted-foreground sm:text-sm pl-6">
+                    {item.answer}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <CtaBand />
+    </SiteShell>
+  );
+}
+
+export function ContactPage() {
+  return (
+    <SiteShell>
+      <PageBanner
+        title="Contact Akvera Universal"
+        subtitle="Connect with founder Mr. Avinash Yadav and our commercial trade desk in Kolhapur, Maharashtra, India."
+      />
+
+      <section className="section-band">
+        <div className="container-wide grid gap-14 lg:grid-cols-[1fr_1.25fr]">
+          <div>
+            <p className="eyebrow">Your Global Sourcing Partner</p>
+            <h2 className="section-title text-3xl font-extrabold sm:text-4xl">We Are Ready to Assist You</h2>
+            <p className="section-copy mt-4 text-sm leading-relaxed text-muted-foreground">
+              Whether you need sample dispatches, proforma quotations, container allocations, or destination
+              import compliance guidance, our team is accessible 24/7.
+            </p>
+
+            <div className="mt-8 space-y-4">
+              <div className="flex items-start gap-3.5 rounded-xl border bg-card p-4">
+                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-secondary text-primary">
+                  <MapPin size={18} />
+                </span>
+                <div>
+                  <h3 className="text-xs font-bold">Corporate Headquarters</h3>
+                  <p className="mt-1 text-xs text-muted-foreground">{companyInfo.address}</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3.5 rounded-xl border bg-card p-4">
+                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-secondary text-primary">
+                  <Phone size={18} />
+                </span>
+                <div>
+                  <h3 className="text-xs font-bold">Direct Phone / WhatsApp</h3>
+                  <a
+                    href={`tel:${companyInfo.phone.replace(/\s+/g, "")}`}
+                    className="mt-1 block text-xs font-semibold text-primary hover:underline"
+                  >
+                    {companyInfo.phone}
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3.5 rounded-xl border bg-card p-4">
+                <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-secondary text-primary">
+                  <Mail size={18} />
+                </span>
+                <div>
+                  <h3 className="text-xs font-bold">Official Email</h3>
+                  <a
+                    href={`mailto:${companyInfo.email}`}
+                    className="mt-1 block text-xs font-semibold text-primary hover:underline"
+                  >
+                    {companyInfo.email}
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Google Maps Placeholder */}
+            <div className="mt-6 rounded-xl border bg-card p-5 shadow-sm text-center">
+              <MapPin className="mx-auto size-7 text-primary mb-2" />
+              <h4 className="text-xs font-bold text-foreground">Kolhapur, Maharashtra, India</h4>
+              <p className="text-[11px] text-muted-foreground mt-1">
+                Premier western Indian agro corridor connecting to JNPT Nhava Sheva & Mumbai ports
+              </p>
+              <a
+                href="https://www.google.com/maps/search/Kolhapur+Maharashtra+India"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-flex items-center gap-1 rounded bg-secondary px-3 py-1.5 text-xs font-bold text-primary"
+              >
+                View on Google Maps ↗
+              </a>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border bg-card p-8 shadow-sm">
+            <h2 className="text-2xl font-bold">Send an Official Commercial Enquiry</h2>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Please provide your volume, packaging, and destination requirements.
+            </p>
+            <div className="mt-6">
+              <InquiryForm kind="contact" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <CtaBand />
+    </SiteShell>
+  );
+}
+
+export function CountriesPage() {
+  const [selected, setSelected] = useState(countryList[0]);
+  const hero = getAssetUrl(
+    heroAsset,
+    "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80"
+  );
+
+  return (
+    <SiteShell>
+      <PageBanner
+        title="Our Global Export Reach"
+        subtitle="Delivering Indian agro excellence across 15+ core destination markets."
+      />
+
+      <section className="section-band">
+        <div className="container-wide grid gap-10 lg:grid-cols-[1.2fr_1fr]">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {countryList.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => setSelected(c)}
+                className={`flex flex-col justify-between rounded-xl border p-4 text-left transition-all ${
+                  selected.id === c.id
+                    ? "border-primary bg-primary text-primary-foreground shadow-md scale-[1.02]"
+                    : "border-border bg-card text-foreground hover:bg-muted"
+                }`}
+              >
+                <span className="text-xs font-bold">{c.code}</span>
+                <div className="mt-3">
+                  <p className="text-sm font-bold">{c.name}</p>
+                  <p className={`text-[10px] ${selected.id === c.id ? "opacity-80" : "text-muted-foreground"}`}>
+                    {c.region}
+                  </p>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          <div className="rounded-2xl border bg-card p-6 shadow-sm flex flex-col justify-between">
+            <div>
+              <img
+                src={hero}
+                alt="Ocean vessel container logistics from India"
+                className="aspect-[1.6] w-full rounded-xl object-cover shadow-md"
+              />
+              <div className="mt-6">
+                <span className="rounded bg-secondary px-2.5 py-0.5 text-xs font-bold text-primary">
+                  {selected.region}
+                </span>
+                <h2 className="mt-2 text-2xl font-bold">India → {selected.name}</h2>
+                <div className="mt-4 space-y-2 text-xs text-muted-foreground">
+                  <p>
+                    <span className="font-semibold text-foreground">Ports:</span> {selected.ports.join(", ")}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-foreground">Estimated Transit:</span> {selected.transitDays}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-foreground">Key Products:</span>{" "}
+                    {selected.topProducts.join(", ")}
+                  </p>
+                  <p className="mt-3 leading-relaxed">{selected.description}</p>
+                </div>
+              </div>
+            </div>
+
+            <Button asChild className="mt-6 font-semibold">
+              <Link to="/contact">Discuss Shipments to {selected.name} →</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <CtaBand />
+    </SiteShell>
+  );
+}
+
+export function LegalPage({ kind }: { kind: "privacy" | "terms" | "sitemap" }) {
+  const title = kind === "privacy" ? "Privacy Policy" : kind === "terms" ? "Terms & Conditions" : "Sitemap";
+
+  return (
+    <SiteShell>
+      <PageBanner title={title} subtitle="Akvera Universal · Corporate Trade & Export Documentation" />
+
+      <section className="section-band">
+        <div className="container-wide max-w-4xl space-y-6 text-xs sm:text-sm leading-relaxed text-foreground/90">
+          {kind === "sitemap" ? (
+            <div className="grid gap-4 sm:grid-cols-3">
+              {[
+                ["Home", "/"],
+                ["About", "/about"],
+                ["Products", "/products"],
+                ["Industries", "/industries"],
+                ["Export Process", "/export-process"],
+                ["Quality Assurance", "/quality"],
+                ["Gallery", "/gallery"],
+                ["Blog", "/blog"],
+                ["Testimonials", "/testimonials"],
+                ["FAQ", "/faq"],
+                ["Contact", "/contact"],
+                ["Countries", "/countries"],
+                ["Privacy Policy", "/privacy-policy"],
+                ["Terms & Conditions", "/terms"],
+                ["Admin Login", "/admin/login"],
+              ].map(([name, path]) => (
+                <Link
+                  key={path}
+                  to={path}
+                  className="rounded-lg border bg-card p-3 font-semibold text-primary transition-colors hover:bg-muted"
+                >
+                  {name} →
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <>
+              <h2 className="text-xl font-bold text-foreground">
+                {kind === "privacy" ? "Data Protection & Privacy Policy" : "Commercial Terms & Conditions"}
+              </h2>
+              <p>
+                {kind === "privacy"
+                  ? "At Akvera Universal, we prioritize the confidentiality of our global buyers and trade partners. Any contact inquiries, specifications, volume requests, and commercial documentation submitted through this portal are handled with stringent commercial confidence. We never share customer data with unauthorized third parties."
+                  : "All agricultural commodity quotations, proforma invoices, and export sales confirmations issued by Akvera Universal are governed by standard International Chamber of Commerce (ICC) Incoterms 2020. Final contract specifications, payment terms (including Letters of Credit), and shipping schedules must be mutually confirmed prior to container booking."}
+              </p>
+              <h3 className="text-lg font-bold text-foreground">Jurisdiction & Contact</h3>
+              <p>
+                Official communication regarding contracts, phytosanitary requirements, or data privacy should be
+                addressed to Mr. Avinash Yadav at info@akverauniversal.com or +91 902 1300 674.
+              </p>
+            </>
+          )}
+        </div>
+      </section>
+
+      <CtaBand />
+    </SiteShell>
+  );
+}

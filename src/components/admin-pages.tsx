@@ -6,205 +6,918 @@ import {
   ArrowRight,
   Bell,
   Box,
+  Building2,
+  Calendar,
   Check,
   ChevronLeft,
   ChevronRight,
   CircleHelp,
   ClipboardList,
+  Compass,
+  FileCheck,
   FileText,
   Globe2,
+  Image as ImageIcon,
+  KeyRound,
+  Layers,
   LayoutDashboard,
   LogOut,
+  Mail,
   Menu,
+  Moon,
   Package,
   Pencil,
+  Phone,
   Plus,
   Search,
+  Settings,
+  Share2,
+  ShieldAlert,
   ShieldCheck,
+  Ship,
+  Sliders,
+  Sparkles,
+  Sprout,
+  Sun,
   Trash2,
+  TrendingUp,
+  Truck,
+  User,
   Users,
   X,
 } from "lucide-react";
 import { useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Modal, Brand } from "@/components/site";
-import { modules, moduleSlug, type DemoRow, type Product } from "@/mock/data";
+import { modules, moduleSlug, type DemoRow, type Product, companyInfo } from "@/mock/data";
 import { useDemo } from "@/mock/store";
 
-const moduleIcons = [
-  Package, Box, Globe2, Globe2, ClipboardList, FileText, Users, CircleHelp,
-  ShieldCheck, Activity, Box, Users, FileText, FileText, ClipboardList,
-  ClipboardList, Users, Box, Users, ShieldCheck, Box, FileText, ClipboardList,
-  FileText, ShieldCheck, Activity, Activity, Bell,
-];
+export const moduleIcons: Record<string, typeof Package> = {
+  products: Package,
+  categories: Layers,
+  countries: Globe2,
+  "export-destinations": Ship,
+  gallery: ImageIcon,
+  blogs: FileText,
+  testimonials: StarIconFallback,
+  faqs: CircleHelp,
+  "quality-certificates": ShieldCheck,
+  "export-process": Truck,
+  services: Sprout,
+  "team-members": Users,
+  "homepage-banner": ImageIcon,
+  "hero-slider": Sliders,
+  "contact-requests": Mail,
+  "quote-requests": ClipboardList,
+  "newsletter-subscribers": Mail,
+  "site-settings": Settings,
+  profile: User,
+  "change-password": KeyRound,
+  "media-library": ImageIcon,
+  "seo-settings": Compass,
+  "menu-management": Menu,
+  "footer-management": Building2,
+  "theme-settings": Sliders,
+  "analytics-dashboard": TrendingUp,
+  "activity-logs": Activity,
+  notifications: Bell,
+};
 
-function AdminShell({ children, title }: { children: ReactNode; title: string }) {
-  const [open, setOpen] = useState(false);
+function StarIconFallback(props: { size?: number; className?: string }) {
+  return <Users {...props} />;
+}
+
+export function AdminShell({ children, title }: { children: ReactNode; title: string }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [navSearch, setNavSearch] = useState("");
+  const [showNotifications, setShowNotifications] = useState(false);
+  const { dark, toggleDark, records } = useDemo();
+  const navigate = useNavigate();
+
+  const notifications = records.notifications ?? [];
+
+  const filteredModules = modules.filter((m) =>
+    m.toLowerCase().includes(navSearch.trim().toLowerCase())
+  );
+
   return (
-    <div className="admin-shell min-h-screen">
-      <aside className={`admin-sidebar p-5 ${open ? "is-open" : ""}`}>
-        <div className="mb-8 flex items-center justify-between">
-          <Link to="/" aria-label="Akvera Universal home"><Brand /></Link>
-          <Button variant="ghost" size="icon" className="md:hidden" aria-label="Close dashboard menu" onClick={() => setOpen(false)}><X /></Button>
+    <div className="admin-shell min-h-screen bg-muted/30 text-foreground transition-colors">
+      {/* Sidebar */}
+      <aside
+        className={`admin-sidebar fixed bottom-0 left-0 top-0 z-50 flex w-64 flex-col border-r bg-card p-4 transition-transform duration-300 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        }`}
+      >
+        <div className="flex items-center justify-between border-b pb-4">
+          <Link to="/" aria-label="Akvera Universal Home">
+            <Brand />
+          </Link>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+            aria-label="Close menu"
+          >
+            <X size={18} />
+          </Button>
         </div>
-        <p className="mb-3 px-4 text-[9px] font-semibold uppercase tracking-[2px] opacity-55">Workspace</p>
-        <Link to="/admin/" className="admin-nav mb-2"><LayoutDashboard size={16} />Overview</Link>
-        <p className="mb-3 mt-6 px-4 text-[9px] font-semibold uppercase tracking-[2px] opacity-55">Content & activity</p>
-        <nav className="grid gap-1" aria-label="Dashboard sections">
-          {modules.map((name, index) => {
-            const Icon = moduleIcons[index] ?? Box;
-            return <Link key={name} to="/admin/$module" params={{ module: moduleSlug(name) }} className="admin-nav"><Icon size={15} />{name}</Link>;
-          })}
-        </nav>
-        <div className="mt-8 border-t border-sidebar-border pt-4">
-          <Link to="/" className="admin-nav"><ArrowLeft size={15} />Back to website</Link>
+
+        {/* Sidebar Search Filter */}
+        <div className="my-3">
+          <label className="relative block">
+            <Search className="absolute left-2.5 top-2.5 text-muted-foreground" size={13} />
+            <input
+              className="field h-8 pl-8 text-xs"
+              placeholder="Filter modules..."
+              value={navSearch}
+              onChange={(e) => setNavSearch(e.target.value)}
+            />
+          </label>
+        </div>
+
+        {/* Navigation Modules */}
+        <div className="flex-1 overflow-y-auto space-y-1 pr-1">
+          <Link
+            to="/admin/"
+            className="admin-nav flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-semibold text-foreground/80 transition-colors hover:bg-primary/10 hover:text-primary"
+            onClick={() => setSidebarOpen(false)}
+          >
+            <LayoutDashboard size={15} /> Dashboard Overview
+          </Link>
+
+          <p className="px-3 pt-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            Modules ({filteredModules.length})
+          </p>
+
+          <nav className="space-y-0.5">
+            {filteredModules.map((name) => {
+              const slug = moduleSlug(name);
+              const Icon = moduleIcons[slug] || Box;
+              return (
+                <Link
+                  key={slug}
+                  to="/admin/$module"
+                  params={{ module: slug }}
+                  onClick={() => setSidebarOpen(false)}
+                  className="admin-nav flex items-center justify-between rounded-md px-3 py-1.5 text-xs font-medium text-foreground/75 transition-colors hover:bg-muted hover:text-primary"
+                >
+                  <span className="flex items-center gap-2.5 truncate">
+                    <Icon size={14} className="shrink-0 text-muted-foreground" />
+                    <span className="truncate">{name}</span>
+                  </span>
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Sidebar Footer */}
+        <div className="mt-4 border-t pt-3 space-y-1">
+          <Link
+            to="/"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-xs font-semibold text-primary transition-colors hover:bg-primary/10"
+          >
+            <ArrowLeft size={14} /> Back to Live Website
+          </Link>
+          <Link
+            to="/admin/login"
+            className="flex items-center gap-2 rounded-md px-3 py-2 text-xs font-semibold text-destructive transition-colors hover:bg-destructive/10"
+          >
+            <LogOut size={14} /> Exit Demo Session
+          </Link>
         </div>
       </aside>
-      <div className="admin-main min-h-screen">
-        <header className="flex min-h-16 items-center justify-between gap-4 border-b bg-card px-5 sm:px-8">
+
+      {/* Main Content Area */}
+      <div className="admin-main min-h-screen lg:ml-64">
+        {/* Top Navbar */}
+        <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-card px-5 sm:px-8 shadow-sm">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open dashboard menu" onClick={() => setOpen(true)}><Menu /></Button>
-            <div><p className="text-[10px] text-muted-foreground">Akvera Universal · Demo workspace</p><h1 className="text-sm font-semibold">{title}</h1></div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="lg:hidden"
+              onClick={() => setSidebarOpen(true)}
+              aria-label="Open sidebar"
+            >
+              <Menu size={20} />
+            </Button>
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                Akvera Universal · Admin Control Panel
+              </p>
+              <h1 className="text-base font-bold text-foreground sm:text-lg">{title}</h1>
+            </div>
           </div>
-          <div className="flex items-center gap-2"><span className="hidden text-xs text-muted-foreground sm:inline">Demo administrator</span><span className="grid size-9 place-items-center rounded-full bg-secondary text-primary"><Users size={16} /></span></div>
+
+          <div className="flex items-center gap-3">
+            {/* Dark Mode Toggle */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleDark}
+              className="size-9 rounded-full"
+              aria-label="Toggle theme"
+            >
+              {dark ? <Sun size={17} /> : <Moon size={17} />}
+            </Button>
+
+            {/* Notifications Popover Trigger */}
+            <div className="relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="relative size-9 rounded-full"
+                aria-label="Notifications"
+              >
+                <Bell size={17} />
+                <span className="absolute right-1 top-1 grid size-4 place-items-center rounded-full bg-accent text-[9px] font-bold text-primary">
+                  {notifications.length}
+                </span>
+              </Button>
+
+              {showNotifications && (
+                <div className="absolute right-0 top-11 z-50 w-80 rounded-xl border bg-card p-4 shadow-xl">
+                  <div className="flex items-center justify-between border-b pb-2">
+                    <span className="text-xs font-bold">Notifications</span>
+                    <span className="text-[10px] text-muted-foreground">{notifications.length} unread</span>
+                  </div>
+                  <div className="mt-2 divide-y max-h-64 overflow-y-auto text-xs">
+                    {notifications.map((n) => (
+                      <div key={n.id} className="py-2.5">
+                        <p className="font-semibold text-foreground">{n.name}</p>
+                        <p className="mt-0.5 text-[11px] text-muted-foreground">{n.detail}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Profile Avatar */}
+            <div className="flex items-center gap-2.5 border-l pl-3">
+              <div className="grid size-9 place-items-center rounded-full bg-secondary font-bold text-primary text-xs">
+                AY
+              </div>
+              <div className="hidden sm:block text-left text-xs">
+                <p className="font-bold text-foreground">Mr. Avinash Yadav</p>
+                <p className="text-[10px] text-muted-foreground">Founder & Admin</p>
+              </div>
+            </div>
+          </div>
         </header>
-        <main className="mx-auto max-w-[1440px] p-5 sm:p-8">{children}</main>
-        <p className="px-5 pb-6 text-center text-[10px] text-muted-foreground sm:px-8">Demo only · Changes are temporary and reset when the page is refreshed.</p>
+
+        <main className="p-5 sm:p-8 max-w-7xl mx-auto">{children}</main>
       </div>
     </div>
   );
 }
 
-export function AdminLoginPage() {
-  const navigate = useNavigate();
-  const [notice, setNotice] = useState(false);
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setNotice(true);
-    void navigate({ to: "/admin/" });
-  }
-  return (
-    <main className="grid min-h-screen place-items-center bg-muted p-5">
-      <section className="w-full max-w-md border bg-card p-7 sm:p-9">
-        <Link to="/" aria-label="Akvera Universal home"><Brand /></Link>
-        <p className="eyebrow mt-10">Demo workspace</p>
-        <h1 className="text-2xl font-semibold">Administrator sign in</h1>
-        <p className="section-copy mt-3">Open the sample dashboard to explore the portfolio controls.</p>
-        <form className="mt-7 grid gap-4" onSubmit={submit}>
-          <label><span className="field-label">Email</span><input className="field" type="email" name="email" autoComplete="username" placeholder="name@company.com" required /></label>
-          <label><span className="field-label">Password</span><input className="field" type="password" name="password" autoComplete="current-password" placeholder="Enter any demo password" required /></label>
-          {notice && <p role="status" className="text-xs text-primary">This is a demonstration. No account or password was checked.</p>}
-          <Button type="submit" className="mt-2 h-11">Open dashboard<ArrowRight /></Button>
-        </form>
-        <p className="mt-5 text-center text-[10px] text-muted-foreground">No account is created and no credentials are stored.</p>
-      </section>
-    </main>
-  );
-}
-
-function Stat({ label, value, icon: Icon, change }: { label: string; value: string; icon: typeof Package; change: string }) {
-  return <article className="border bg-card p-5"><div className="flex items-start justify-between gap-2"><div><p className="text-xs text-muted-foreground">{label}</p><p className="mt-3 text-2xl font-semibold">{value}</p></div><span className="grid size-10 place-items-center rounded bg-secondary text-primary"><Icon size={19} /></span></div><p className="mt-3 text-[10px] text-muted-foreground">{change}</p></article>;
-}
-
 export function AdminOverview() {
   const { products, records } = useDemo();
   const quotes = records["quote-requests"] ?? [];
-  const enquiries = records["contact-requests"] ?? [];
+  const contacts = records["contact-requests"] ?? [];
   const activity = records["activity-logs"] ?? [];
-  return <AdminShell title="Overview">
-    <div className="mb-8 flex flex-wrap items-end justify-between gap-4"><div><p className="eyebrow">Your workspace</p><h2 className="section-title">Good morning.</h2><p className="section-copy mt-2">A snapshot of the Akvera Universal demo catalogue.</p></div><Button asChild variant="outline"><Link to="/">View website<ArrowRight /></Link></Button></div>
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      <Stat label="Listed products" value={String(products.filter((product) => product.status).length)} icon={Package} change="Sample catalogue items" />
-      <Stat label="Quote requests" value={String(quotes.length)} icon={ClipboardList} change="Illustrative demo entries" />
-      <Stat label="Contact enquiries" value={String(enquiries.length)} icon={Users} change="Illustrative demo entries" />
-      <Stat label="Export destinations" value={String((records.countries ?? []).length)} icon={Globe2} change="Sample market list" />
-    </div>
-    <div className="mt-8 grid gap-6 xl:grid-cols-[1.35fr_1fr]">
-      <section className="border bg-card"><div className="flex items-center justify-between gap-3 border-b px-5 py-4"><div><h3 className="text-sm font-semibold">Latest quote requests</h3><p className="mt-1 text-[10px] text-muted-foreground">Temporary sample submissions</p></div><Button asChild variant="link" size="sm"><Link to="/admin/$module" params={{ module: "quote-requests" }}>View all<ArrowRight /></Link></Button></div>
-        <div className="divide-y">{quotes.slice(0, 5).map((item) => <div key={item.id} className="flex items-center justify-between gap-4 px-5 py-4"><div className="min-w-0"><p className="truncate text-xs font-medium">{item.name}</p><p className="mt-1 truncate text-[10px] text-muted-foreground">{item.detail}</p></div><span className="shrink-0 text-[9px] text-primary">{item.status ? "New" : "Reviewed"}</span></div>)}</div>
-      </section>
-      <section className="border bg-card"><div className="border-b px-5 py-4"><h3 className="text-sm font-semibold">Recent activity</h3><p className="mt-1 text-[10px] text-muted-foreground">Sample workspace history</p></div><div className="divide-y">{activity.slice(0, 5).map((item) => <div key={item.id} className="flex gap-3 px-5 py-4"><span className="grid size-8 shrink-0 place-items-center rounded bg-secondary text-primary"><Activity size={15} /></span><div><p className="text-xs font-medium">{item.name}</p><p className="mt-1 text-[10px] text-muted-foreground">{item.detail}</p></div></div>)}</div></section>
-    </div>
-    <section className="mt-8 border bg-card"><div className="flex flex-wrap items-center justify-between gap-3 border-b px-5 py-4"><div><h3 className="text-sm font-semibold">Popular products</h3><p className="mt-1 text-[10px] text-muted-foreground">Sample items in the live catalogue preview</p></div><Button asChild variant="outline" size="sm"><Link to="/admin/$module" params={{ module: "products" }}>Manage products<ArrowRight /></Link></Button></div>
-      <div className="grid gap-px bg-border sm:grid-cols-2 lg:grid-cols-4">{products.slice(0, 4).map((product) => <div key={product.id} className="bg-card p-5"><p className="text-xs font-medium">{product.name}</p><p className="mt-2 text-[10px] text-muted-foreground">{product.category} · {product.origin}</p></div>)}</div>
-    </section>
-  </AdminShell>;
+
+  return (
+    <AdminShell title="Dashboard Overview">
+      {/* Top Welcome Band */}
+      <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <span className="text-xs font-bold uppercase tracking-wider text-primary">Export Command Center</span>
+          <h2 className="text-2xl font-bold sm:text-3xl text-foreground">Welcome, Mr. Avinash Yadav</h2>
+          <p className="text-xs text-muted-foreground mt-1">
+            Real-time status of agro commodity shipments, client quotes, and catalogue items.
+          </p>
+        </div>
+        <Button asChild variant="outline" className="font-semibold text-xs">
+          <Link to="/">View Public Website →</Link>
+        </Button>
+      </div>
+
+      {/* 6 Metric KPI Cards */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        <article className="rounded-xl border bg-card p-4 shadow-sm">
+          <p className="text-[11px] font-semibold text-muted-foreground">Listed Products</p>
+          <p className="mt-2 text-2xl font-extrabold text-foreground">{products.filter((p) => p.status).length}</p>
+          <span className="mt-1 block text-[10px] text-emerald-600 font-semibold">100% Export Ready</span>
+        </article>
+
+        <article className="rounded-xl border bg-card p-4 shadow-sm">
+          <p className="text-[11px] font-semibold text-muted-foreground">Quote Requests</p>
+          <p className="mt-2 text-2xl font-extrabold text-accent">{quotes.length}</p>
+          <span className="mt-1 block text-[10px] text-accent font-semibold">Pending Review</span>
+        </article>
+
+        <article className="rounded-xl border bg-card p-4 shadow-sm">
+          <p className="text-[11px] font-semibold text-muted-foreground">Contact Enquiries</p>
+          <p className="mt-2 text-2xl font-extrabold text-foreground">{contacts.length}</p>
+          <span className="mt-1 block text-[10px] text-muted-foreground font-semibold">Active Inquiries</span>
+        </article>
+
+        <article className="rounded-xl border bg-card p-4 shadow-sm">
+          <p className="text-[11px] font-semibold text-muted-foreground">Export Markets</p>
+          <p className="mt-2 text-2xl font-extrabold text-primary">35+</p>
+          <span className="mt-1 block text-[10px] text-primary font-semibold">6 Continents</span>
+        </article>
+
+        <article className="rounded-xl border bg-card p-4 shadow-sm">
+          <p className="text-[11px] font-semibold text-muted-foreground">Monthly Volume</p>
+          <p className="mt-2 text-2xl font-extrabold text-foreground">1,850 MT</p>
+          <span className="mt-1 block text-[10px] text-emerald-600 font-semibold">+14% vs Last Month</span>
+        </article>
+
+        <article className="rounded-xl border bg-card p-4 shadow-sm">
+          <p className="text-[11px] font-semibold text-muted-foreground">Containers in Transit</p>
+          <p className="mt-2 text-2xl font-extrabold text-primary">28 FCL</p>
+          <span className="mt-1 block text-[10px] text-accent font-semibold">Active Maritime Freight</span>
+        </article>
+      </div>
+
+      {/* Mock Analytics Charts */}
+      <div className="mt-8 grid gap-6 lg:grid-cols-12">
+        {/* Monthly Export Volume Bar Chart */}
+        <section className="rounded-2xl border bg-card p-6 shadow-sm lg:col-span-8">
+          <div className="flex items-center justify-between border-b pb-4">
+            <div>
+              <h3 className="text-base font-bold text-foreground">Monthly Export Volume (Metric Tonnes)</h3>
+              <p className="text-xs text-muted-foreground">Grain, Spices, and Pulses Shipped via Nhava Sheva & Mundra</p>
+            </div>
+            <span className="rounded-lg bg-secondary px-2.5 py-1 text-xs font-bold text-primary">
+              2026 Season
+            </span>
+          </div>
+
+          <div className="mt-6 flex h-48 items-end gap-3 pt-4 sm:gap-4">
+            {[
+              ["Jan", 1100],
+              ["Feb", 1250],
+              ["Mar", 1400],
+              ["Apr", 1650],
+              ["May", 1500],
+              ["Jun", 1300],
+              ["Jul", 1450],
+              ["Aug", 1600],
+              ["Sep", 1720],
+              ["Oct", 1850],
+              ["Nov", 1920],
+              ["Dec", 2050],
+            ].map(([month, val]) => (
+              <div key={month as string} className="flex flex-1 flex-col items-center gap-2">
+                <div
+                  className="w-full rounded-t-md bg-primary transition-all duration-500 hover:bg-accent"
+                  style={{ height: `${((val as number) / 2200) * 100}%` }}
+                  title={`${month}: ${val} MT`}
+                />
+                <span className="text-[10px] font-medium text-muted-foreground">{month as string}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Commodity Distribution Breakdown */}
+        <section className="rounded-2xl border bg-card p-6 shadow-sm lg:col-span-4 flex flex-col justify-between">
+          <div>
+            <h3 className="text-base font-bold text-foreground">Export Category Share</h3>
+            <p className="text-xs text-muted-foreground">Distribution across volume categories</p>
+
+            <div className="mt-6 space-y-4">
+              <div>
+                <div className="flex justify-between text-xs font-semibold">
+                  <span>Basmati & Non-Basmati Rice</span>
+                  <span className="text-primary font-bold">38%</span>
+                </div>
+                <div className="mt-1.5 h-2 w-full rounded-full bg-muted overflow-hidden">
+                  <div className="h-full bg-primary w-[38%]" />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs font-semibold">
+                  <span>Whole & Ground Spices</span>
+                  <span className="text-accent font-bold">26%</span>
+                </div>
+                <div className="mt-1.5 h-2 w-full rounded-full bg-muted overflow-hidden">
+                  <div className="h-full bg-accent w-[26%]" />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs font-semibold">
+                  <span>Wheat, Maize & Millets</span>
+                  <span className="text-leaf font-bold">20%</span>
+                </div>
+                <div className="mt-1.5 h-2 w-full rounded-full bg-muted overflow-hidden">
+                  <div className="h-full bg-leaf w-[20%]" />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs font-semibold">
+                  <span>Pulses, Sugar & Fresh Produce</span>
+                  <span className="text-foreground font-bold">16%</span>
+                </div>
+                <div className="mt-1.5 h-2 w-full rounded-full bg-muted overflow-hidden">
+                  <div className="h-full bg-foreground/60 w-[16%]" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 rounded-xl bg-muted/50 p-3 text-[11px] text-muted-foreground">
+            <span className="font-bold text-foreground">Port Note:</span> Mundra and Nhava Sheva (JNPT) handle 92% of our export container traffic.
+          </div>
+        </section>
+      </div>
+
+      {/* Inquiries & Recent Activity */}
+      <div className="mt-8 grid gap-6 lg:grid-cols-2">
+        {/* Latest Quote Requests */}
+        <section className="rounded-2xl border bg-card p-6 shadow-sm">
+          <div className="flex items-center justify-between border-b pb-4">
+            <h3 className="text-base font-bold text-foreground">Recent Quote Requests</h3>
+            <Button asChild variant="link" size="sm" className="text-xs">
+              <Link to="/admin/$module" params={{ module: "quote-requests" }}>
+                View All Quotes →
+              </Link>
+            </Button>
+          </div>
+
+          <div className="mt-4 divide-y">
+            {quotes.slice(0, 5).map((q) => (
+              <div key={q.id} className="py-3 flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs font-bold text-foreground">{q.name}</p>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">{q.detail}</p>
+                </div>
+                <span className="rounded bg-secondary px-2 py-0.5 text-[10px] font-bold text-primary">
+                  New
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Activity Logs */}
+        <section className="rounded-2xl border bg-card p-6 shadow-sm">
+          <div className="flex items-center justify-between border-b pb-4">
+            <h3 className="text-base font-bold text-foreground">Operational Activity Logs</h3>
+            <Button asChild variant="link" size="sm" className="text-xs">
+              <Link to="/admin/$module" params={{ module: "activity-logs" }}>
+                Full Log History →
+              </Link>
+            </Button>
+          </div>
+
+          <div className="mt-4 divide-y">
+            {activity.slice(0, 5).map((act) => (
+              <div key={act.id} className="py-3 flex items-start gap-3">
+                <span className="grid size-7 place-items-center rounded-lg bg-secondary text-primary shrink-0 mt-0.5">
+                  <Activity size={14} />
+                </span>
+                <div>
+                  <p className="text-xs font-bold text-foreground">{act.name}</p>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">{act.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </AdminShell>
+  );
 }
 
-type Editor = { mode: "add" | "edit" | "view"; row?: DemoRow };
+type EditorMode = { mode: "add" | "edit" | "view"; row?: DemoRow };
 const pageSize = 8;
-
-function productToRow(product: Product): DemoRow {
-  return { id: product.id, name: product.name, detail: `${product.category} · ${product.origin} · ${product.description}`, status: product.status };
-}
 
 export function AdminModulePage({ module }: { module: string }) {
   const { products, setProducts, records, setRecords } = useDemo();
-  const moduleName = modules.find((name) => moduleSlug(name) === module) ?? "Content";
+  const moduleName = modules.find((m) => moduleSlug(m) === module) ?? "Module Management";
   const isProducts = module === "products";
-  const rows = isProducts ? products.map(productToRow) : records[module] ?? [];
+
+  const rows: DemoRow[] = isProducts
+    ? products.map((p) => ({
+        id: p.id,
+        name: p.name,
+        detail: `${p.category} · ${p.origin} · ${p.qualityGrade} · Packaging: ${p.packaging}`,
+        status: p.status,
+      }))
+    : records[module] ?? [];
+
   const [query, setQuery] = useState("");
-  const [sort, setSort] = useState<"newest" | "name">("newest");
+  const [sort, setSort] = useState<"newest" | "name" | "status">("newest");
   const [page, setPage] = useState(1);
-  const [editor, setEditor] = useState<Editor | null>(null);
+  const [editor, setEditor] = useState<EditorMode | null>(null);
   const [pendingDelete, setPendingDelete] = useState<DemoRow | null>(null);
+
   const filtered = useMemo(() => {
-    const result = rows.filter((row) => `${row.name} ${row.detail}`.toLowerCase().includes(query.trim().toLowerCase()));
-    return sort === "name" ? [...result].sort((left, right) => left.name.localeCompare(right.name)) : result;
-  }, [query, rows, sort]);
-  const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
+    let result = rows.filter((r) =>
+      `${r.name} ${r.detail}`.toLowerCase().includes(query.trim().toLowerCase())
+    );
+    if (sort === "name") {
+      result = [...result].sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sort === "status") {
+      result = [...result].sort((a, b) => Number(b.status) - Number(a.status));
+    }
+    return result;
+  }, [rows, query, sort]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const pageRows = filtered.slice((page - 1) * pageSize, page * pageSize);
 
-  function saveRow(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  function saveRecord(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     if (!editor || editor.mode === "view") return;
-    const form = new FormData(event.currentTarget);
-    const name = String(form.get("name") ?? "").trim();
-    const detail = String(form.get("detail") ?? "").trim();
-    const status = form.get("status") === "on";
+
+    const f = new FormData(e.currentTarget);
+    const name = String(f.get("name") ?? "").trim();
+    const detail = String(f.get("detail") ?? "").trim();
+    const status = f.get("status") === "on";
+
     if (!name) return;
+
     if (isProducts) {
       setProducts((current) => {
         if (editor.mode === "edit" && editor.row) {
-          return current.map((product) => product.id === editor.row?.id ? { ...product, name, description: detail, status } : product);
+          return current.map((p) =>
+            p.id === editor.row?.id ? { ...p, name, description: detail, status } : p
+          );
         }
-        const id = `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}-${Date.now()}`;
-        return [...current, { id, name, category: "Other Products", origin: "India", description: detail, packaging: "Packaging confirmed on enquiry", image: current.length % 16, status }];
+        const id = `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Date.now()}`;
+        return [
+          ...current,
+          {
+            id,
+            name,
+            category: "General Agro",
+            origin: "Kolhapur, Maharashtra, India",
+            description: detail,
+            packaging: "25kg / 50kg PP Bags",
+            countriesExported: ["UAE", "UK", "USA"],
+            qualityGrade: "Grade A Export Standard",
+            specifications: [{ label: "Purity", value: "99% Sortex" }],
+            shippingTerms: "FOB Nhava Sheva / Mundra",
+            availability: "Year Round",
+            qualityStandards: "FSSAI & Phytosanitary Inspected",
+            image: 0,
+            status,
+          },
+        ];
       });
     } else {
-      setRecords((current) => {
-        const list = current[module] ?? [];
-        if (editor.mode === "edit" && editor.row) return { ...current, [module]: list.map((row) => row.id === editor.row?.id ? { ...row, name, detail, status } : row) };
-        return { ...current, [module]: [...list, { id: crypto.randomUUID(), name, detail, status }] };
+      setRecords((curr) => {
+        const list = curr[module] ?? [];
+        if (editor.mode === "edit" && editor.row) {
+          return {
+            ...curr,
+            [module]: list.map((item) =>
+              item.id === editor.row?.id ? { ...item, name, detail, status } : item
+            ),
+          };
+        }
+        return {
+          ...curr,
+          [module]: [...list, { id: crypto.randomUUID(), name, detail, status }],
+        };
       });
     }
+
     setEditor(null);
   }
 
-  function removeRow(row: DemoRow) {
-    if (isProducts) setProducts((current) => current.filter((product) => product.id !== row.id));
-    else setRecords((current) => ({ ...current, [module]: (current[module] ?? []).filter((item) => item.id !== row.id) }));
+  function deleteRecord(row: DemoRow) {
+    if (isProducts) {
+      setProducts((curr) => curr.filter((p) => p.id !== row.id));
+    } else {
+      setRecords((curr) => ({
+        ...curr,
+        [module]: (curr[module] ?? []).filter((item) => item.id !== row.id),
+      }));
+    }
     setPendingDelete(null);
   }
 
   function toggleStatus(row: DemoRow) {
-    if (isProducts) setProducts((current) => current.map((product) => product.id === row.id ? { ...product, status: !product.status } : product));
-    else setRecords((current) => ({ ...current, [module]: (current[module] ?? []).map((item) => item.id === row.id ? { ...item, status: !item.status } : item) }));
+    if (isProducts) {
+      setProducts((curr) =>
+        curr.map((p) => (p.id === row.id ? { ...p, status: !p.status } : p))
+      );
+    } else {
+      setRecords((curr) => ({
+        ...curr,
+        [module]: (curr[module] ?? []).map((item) =>
+          item.id === row.id ? { ...item, status: !item.status } : item
+        ),
+      }));
+    }
   }
 
-  return <AdminShell title={moduleName}>
-    <div className="mb-7 flex flex-wrap items-end justify-between gap-4"><div><p className="eyebrow">Content management</p><h2 className="section-title">{moduleName}</h2><p className="section-copy mt-2">Review and update this session’s sample {moduleName.toLowerCase()}.</p></div><Button onClick={() => setEditor({ mode: "add" })}><Plus />Add {moduleName === "Products" ? "product" : "item"}</Button></div>
-    <section className="border bg-card">
-      <div className="flex flex-col gap-3 border-b p-4 sm:flex-row sm:items-center sm:justify-between"><label className="relative min-w-0 sm:max-w-sm"><Search className="absolute left-3 top-3 text-muted-foreground" size={15} /><input className="field pl-9" aria-label={`Search ${moduleName}`} placeholder={`Search ${moduleName.toLowerCase()}…`} value={query} onChange={(event) => { setQuery(event.target.value); setPage(1); }} /></label><label className="flex items-center gap-2 text-xs text-muted-foreground"><ArrowDownWideNarrow size={15} /><span>Sort</span><select className="field w-36 py-2" aria-label="Sort items" value={sort} onChange={(event) => setSort(event.target.value as "newest" | "name")}><option value="newest">Default order</option><option value="name">Name A–Z</option></select></label></div>
-      <div className="overflow-x-auto"><table className="admin-table min-w-[680px]"><thead><tr><th>Name</th><th>Details</th><th>Status</th><th className="text-right">Actions</th></tr></thead><tbody>
-        {pageRows.map((row) => <tr key={row.id}><td className="max-w-52 font-medium">{row.name}</td><td className="max-w-lg text-muted-foreground"><span className="line-clamp-2">{row.detail}</span></td><td><Button size="sm" variant={row.status ? "secondary" : "outline"} className="h-7" aria-label={`Set ${row.name} ${row.status ? "inactive" : "active"}`} onClick={() => toggleStatus(row)}>{row.status ? "Active" : "Inactive"}</Button></td><td><div className="flex justify-end gap-1"><Button size="icon" variant="ghost" aria-label={`View ${row.name}`} onClick={() => setEditor({ mode: "view", row })}><Search /></Button><Button size="icon" variant="ghost" aria-label={`Edit ${row.name}`} onClick={() => setEditor({ mode: "edit", row })}><Pencil /></Button><Button size="icon" variant="ghost" aria-label={`Delete ${row.name}`} onClick={() => setPendingDelete(row)}><Trash2 /></Button></div></td></tr>)}
-        {!pageRows.length && <tr><td colSpan={4} className="py-12 text-center text-xs text-muted-foreground">No matching items.</td></tr>}
-      </tbody></table></div>
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t px-4 py-3"><p className="text-[10px] text-muted-foreground">{filtered.length ? `Showing ${(page - 1) * pageSize + 1}–${Math.min(page * pageSize, filtered.length)} of ${filtered.length}` : "No items"}</p><div className="flex items-center gap-2"><Button size="icon" variant="outline" aria-label="Previous page" disabled={page <= 1} onClick={() => setPage((current) => Math.max(1, current - 1))}><ChevronLeft /></Button><span className="min-w-16 text-center text-[10px]">Page {page} of {pageCount}</span><Button size="icon" variant="outline" aria-label="Next page" disabled={page >= pageCount} onClick={() => setPage((current) => Math.min(pageCount, current + 1))}><ChevronRight /></Button></div></div>
-    </section>
-    {editor && <Modal title={editor.mode === "view" ? "Item details" : editor.mode === "edit" ? "Edit item" : "Add item"} onClose={() => setEditor(null)}>
-      {editor.mode === "view" ? <div><h3 className="text-base font-semibold">{editor.row?.name}</h3><p className="section-copy mt-3">{editor.row?.detail}</p><p className="mt-5 text-xs">Status: {editor.row?.status ? "Active" : "Inactive"}</p></div> : <form className="grid gap-4" onSubmit={saveRow}><label><span className="field-label">Name *</span><input className="field" name="name" required defaultValue={editor.row?.name ?? ""} /></label><label><span className="field-label">Details</span><textarea className="field min-h-28" name="detail" defaultValue={isProducts && editor.row ? products.find((product) => product.id === editor.row?.id)?.description ?? editor.row.detail : editor.row?.detail ?? ""} /></label><label className="flex items-center gap-3 text-xs"><input type="checkbox" name="status" defaultChecked={editor.row?.status ?? true} />Active</label><div className="flex justify-end gap-2"><Button type="button" variant="outline" onClick={() => setEditor(null)}>Cancel</Button><Button type="submit">Save changes<Check /></Button></div></form>}
-    </Modal>}
-    {pendingDelete && <Modal title="Delete this item?" onClose={() => setPendingDelete(null)}><p className="section-copy">“{pendingDelete.name}” will be removed from this temporary demo list.</p><div className="mt-6 flex justify-end gap-2"><Button variant="outline" onClick={() => setPendingDelete(null)}>Cancel</Button><Button variant="destructive" onClick={() => removeRow(pendingDelete)}><Trash2 />Delete</Button></div></Modal>}
-  </AdminShell>;
+  return (
+    <AdminShell title={moduleName}>
+      <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        <div>
+          <span className="text-xs font-bold uppercase tracking-wider text-primary">Content Control</span>
+          <h2 className="text-2xl font-bold text-foreground">{moduleName}</h2>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Manage records, toggle active visibility, or add entries to this workspace.
+          </p>
+        </div>
+        <Button onClick={() => setEditor({ mode: "add" })} className="font-semibold text-xs h-10">
+          <Plus size={15} /> Add New {moduleName.slice(0, -1) || "Item"}
+        </Button>
+      </div>
+
+      {/* Table Container */}
+      <div className="rounded-2xl border bg-card shadow-sm overflow-hidden">
+        {/* Search & Sort Controls */}
+        <div className="flex flex-col gap-3 border-b p-4 sm:flex-row sm:items-center sm:justify-between bg-muted/20">
+          <label className="relative min-w-0 sm:w-80">
+            <Search className="absolute left-3 top-2.5 text-muted-foreground" size={14} />
+            <input
+              className="field h-9 pl-9 text-xs"
+              placeholder={`Search in ${moduleName.toLowerCase()}...`}
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setPage(1);
+              }}
+            />
+          </label>
+
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <ArrowDownWideNarrow size={14} />
+            <select
+              className="field h-9 text-xs w-36"
+              value={sort}
+              onChange={(e) => setSort(e.target.value as typeof sort)}
+            >
+              <option value="newest">Default Order</option>
+              <option value="name">Name (A–Z)</option>
+              <option value="status">Status (Active first)</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Modern Table */}
+        <div className="overflow-x-auto">
+          <table className="admin-table w-full">
+            <thead>
+              <tr className="border-b bg-muted/40 text-left text-[11px] font-bold text-muted-foreground uppercase">
+                <th className="px-5 py-3.5">Name / Title</th>
+                <th className="px-5 py-3.5">Description & Parameters</th>
+                <th className="px-5 py-3.5">Visibility Status</th>
+                <th className="px-5 py-3.5 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y text-xs">
+              {pageRows.map((row) => (
+                <tr key={row.id} className="hover:bg-muted/30 transition-colors">
+                  <td className="px-5 py-4 font-bold text-foreground max-w-xs">{row.name}</td>
+                  <td className="px-5 py-4 text-muted-foreground max-w-md">
+                    <p className="line-clamp-2 leading-relaxed">{row.detail}</p>
+                  </td>
+                  <td className="px-5 py-4">
+                    <button
+                      type="button"
+                      onClick={() => toggleStatus(row)}
+                      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold transition-colors ${
+                        row.status
+                          ? "bg-secondary text-primary hover:bg-secondary/80"
+                          : "bg-muted text-muted-foreground hover:bg-muted/80"
+                      }`}
+                    >
+                      <span className={`size-1.5 rounded-full ${row.status ? "bg-primary" : "bg-muted-foreground"}`} />
+                      {row.status ? "Active" : "Disabled"}
+                    </button>
+                  </td>
+                  <td className="px-5 py-4 text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => setEditor({ mode: "view", row })}
+                        aria-label={`View ${row.name}`}
+                        className="size-8 text-muted-foreground hover:text-foreground"
+                      >
+                        <Search size={14} />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => setEditor({ mode: "edit", row })}
+                        aria-label={`Edit ${row.name}`}
+                        className="size-8 text-muted-foreground hover:text-primary"
+                      >
+                        <Pencil size={14} />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => setPendingDelete(row)}
+                        aria-label={`Delete ${row.name}`}
+                        className="size-8 text-muted-foreground hover:text-destructive"
+                      >
+                        <Trash2 size={14} />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+
+              {!pageRows.length && (
+                <tr>
+                  <td colSpan={4} className="py-16 text-center text-xs text-muted-foreground">
+                    No entries match your search query.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t px-5 py-3.5 text-xs text-muted-foreground">
+          <p>
+            Showing {filtered.length ? (page - 1) * pageSize + 1 : 0}–
+            {Math.min(page * pageSize, filtered.length)} of {filtered.length} entries
+          </p>
+
+          <div className="flex items-center gap-2">
+            <Button
+              size="icon"
+              variant="outline"
+              disabled={page <= 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className="size-8"
+              aria-label="Previous page"
+            >
+              <ChevronLeft size={14} />
+            </Button>
+            <span className="min-w-16 text-center font-medium">
+              Page {page} of {totalPages}
+            </span>
+            <Button
+              size="icon"
+              variant="outline"
+              disabled={page >= totalPages}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              className="size-8"
+              aria-label="Next page"
+            >
+              <ChevronRight size={14} />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Add / Edit / View Modal */}
+      {editor && (
+        <Modal
+          title={
+            editor.mode === "view"
+              ? "Entry Details"
+              : editor.mode === "edit"
+              ? "Edit Record"
+              : `Add New ${moduleName.slice(0, -1) || "Item"}`
+          }
+          onClose={() => setEditor(null)}
+        >
+          {editor.mode === "view" ? (
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-bold text-foreground">{editor.row?.name}</h3>
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{editor.row?.detail}</p>
+              </div>
+              <div className="border-t pt-3 flex items-center justify-between text-xs">
+                <span className="font-semibold text-muted-foreground">Current Status:</span>
+                <span className={editor.row?.status ? "font-bold text-primary" : "text-muted-foreground"}>
+                  {editor.row?.status ? "Active (Visible publicly)" : "Inactive"}
+                </span>
+              </div>
+            </div>
+          ) : (
+            <form className="grid gap-4" onSubmit={saveRecord}>
+              <label>
+                <span className="field-label">Name / Title *</span>
+                <input
+                  className="field"
+                  name="name"
+                  required
+                  defaultValue={editor.row?.name ?? ""}
+                  placeholder="Enter record name or title"
+                />
+              </label>
+
+              <label>
+                <span className="field-label">Details / Description</span>
+                <textarea
+                  className="field min-h-24"
+                  name="detail"
+                  defaultValue={editor.row?.detail ?? ""}
+                  placeholder="Enter specifications, description, or notes..."
+                />
+              </label>
+
+              <label className="flex items-center gap-2.5 text-xs font-semibold">
+                <input type="checkbox" name="status" defaultChecked={editor.row?.status ?? true} />
+                <span>Mark as Active (Visible across demo site)</span>
+              </label>
+
+              <div className="mt-4 flex justify-end gap-2 border-t pt-4">
+                <Button type="button" variant="outline" onClick={() => setEditor(null)}>
+                  Cancel
+                </Button>
+                <Button type="submit">
+                  Save Changes <Check size={14} />
+                </Button>
+              </div>
+            </form>
+          )}
+        </Modal>
+      )}
+
+      {/* Confirmation Delete Modal */}
+      {pendingDelete && (
+        <Modal title="Confirm Removal" onClose={() => setPendingDelete(null)}>
+          <p className="text-xs sm:text-sm text-foreground">
+            Are you sure you want to remove <strong className="text-destructive">“{pendingDelete.name}”</strong> from
+            this temporary demo session?
+          </p>
+          <div className="mt-6 flex justify-end gap-2 border-t pt-4">
+            <Button variant="outline" onClick={() => setPendingDelete(null)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={() => deleteRecord(pendingDelete)}>
+              <Trash2 size={14} /> Remove Entry
+            </Button>
+          </div>
+        </Modal>
+      )}
+    </AdminShell>
+  );
+}
+
+export function AdminLoginPage() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("admin@akverauniversal.com");
+  const [password, setPassword] = useState("admin123");
+
+  function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    void navigate({ to: "/admin/" });
+  }
+
+  return (
+    <main className="grid min-h-screen place-items-center bg-muted/40 p-4">
+      <div className="w-full max-w-md rounded-2xl border bg-card p-8 shadow-xl">
+        <div className="text-center">
+          <Link to="/" className="inline-block" aria-label="Akvera Universal Home">
+            <Brand />
+          </Link>
+          <p className="eyebrow mx-auto justify-center mt-6">Administrative Portal</p>
+          <h1 className="text-2xl font-bold text-foreground">Sign In to Dashboard</h1>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Explore the Akvera Universal portfolio controls. No authentication required in this demonstration.
+          </p>
+        </div>
+
+        <form className="mt-8 grid gap-4" onSubmit={submit}>
+          <label>
+            <span className="field-label">Administrator Email</span>
+            <input
+              className="field"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </label>
+
+          <label>
+            <span className="field-label">Password</span>
+            <input
+              className="field"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </label>
+
+          <Button type="submit" className="mt-2 h-11 font-semibold text-xs">
+            Open Dashboard Overview <ArrowRight size={15} />
+          </Button>
+        </form>
+
+        <div className="mt-6 border-t pt-4 text-center">
+          <Link to="/" className="text-xs font-semibold text-primary hover:underline">
+            ← Return to Live Website
+          </Link>
+        </div>
+      </div>
+    </main>
+  );
 }

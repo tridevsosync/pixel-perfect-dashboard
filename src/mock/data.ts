@@ -1,78 +1,241 @@
-export type Product = { id: string; name: string; category: string; origin: string; description: string; packaging: string; image: number; status: boolean };
-export const products: Product[] = [
-  ["Basmati Rice", "Grains & Cereals", "Punjab & Haryana", "Aromatic, long-grain basmati, carefully aged for exceptional taste and texture."],
-  ["Premium Wheat", "Grains & Cereals", "Madhya Pradesh", "Golden, nutrient-rich wheat sourced from India's finest growing regions."],
-  ["Yellow Maize", "Grains & Cereals", "Maharashtra", "Uniform golden kernels, selected for food processing and animal feed."],
-  ["Indian Spices", "Spices", "Across India", "Authentic, vibrant spices with rich aromas and consistent quality."],
-  ["Turmeric", "Spices", "Maharashtra", "Naturally vibrant turmeric with a rich aroma, available whole or ground."],
-  ["Red Chilli", "Spices", "Andhra Pradesh", "Sun-dried chillies with bold colour and a distinctive, full-bodied heat."],
-  ["Cumin Seeds", "Spices", "Gujarat", "Clean, aromatic cumin seeds, carefully sorted for international buyers."],
-  ["Black Pepper", "Spices", "Kerala", "Full-bodied peppercorns from the lush spice-growing regions of southern India."],
-  ["Indian Pulses", "Pulses & Legumes", "Madhya Pradesh", "Protein-rich lentils and pulses, expertly graded and hygienically packed."],
-  ["Fresh Red Onion", "Fresh Produce", "Maharashtra", "Firm, fresh red onions with excellent shelf life and consistent sizing."],
-  ["Fresh Garlic", "Fresh Produce", "Madhya Pradesh", "Aromatic white garlic bulbs selected for freshness and uniform quality."],
-  ["Groundnuts", "Pulses & Legumes", "Gujarat", "Premium groundnuts with excellent flavour, available shelled and unshelled."],
-  ["Pearl Millets", "Grains & Cereals", "Rajasthan", "Wholesome millets, sustainably sourced and carefully cleaned."],
-  ["Refined Sugar", "Other Products", "Maharashtra", "Fine white sugar with uniform crystal size and dependable quality."],
-  ["Organic Mung Beans", "Organic", "Maharashtra", "Naturally grown mung beans, responsibly sourced from trusted growers."],
-  ["Indian Tea", "Other Products", "Assam", "Rich, fragrant tea leaves sourced from renowned Indian tea estates."],
-].map((p, i) => ({ id: p[0].toLowerCase().replaceAll(" ", "-"), name: p[0], category: p[1], origin: p[2], description: p[3], packaging: "5 kg / 25 kg / 50 kg · Custom packaging", image: i, status: true }));
-export const countries = ["UAE", "Saudi Arabia", "Qatar", "Oman", "Kuwait", "Singapore", "Malaysia", "United Kingdom", "USA", "Canada", "Australia", "South Africa", "Germany", "France", "Italy"];
-export const processSteps = [
-  ["Sourcing", "Partnering with trusted growers at the origin."],
-  ["Quality inspection", "Every batch checked for purity and consistency."],
-  ["Packaging", "Secure packaging tailored to your requirements."],
-  ["Documentation", "Clear, complete export and shipping documents."],
-  ["Container loading", "Careful handling and supervised loading."],
-  ["Shipping", "Reliable freight partners and shipment updates."],
-  ["Delivery", "Your products, delivered with care."],
+import { products, type Product, type ProductSpecification } from "./products";
+import { testimonials, type Testimonial } from "./testimonials";
+import { blogs, type BlogPost } from "./blogs";
+import { galleryItems, type GalleryItem } from "./gallery";
+import { countryList, countries, type CountryExport } from "./countries";
+import { teamMembers, type TeamMember } from "./team";
+import { serviceList, type ServiceItem } from "./services";
+import { faqList, faqs, type FAQItem } from "./faq";
+
+export {
+  products,
+  type Product,
+  type ProductSpecification,
+  testimonials,
+  type Testimonial,
+  blogs,
+  type BlogPost,
+  galleryItems,
+  type GalleryItem,
+  countryList,
+  countries,
+  type CountryExport,
+  teamMembers,
+  type TeamMember,
+  serviceList,
+  type ServiceItem,
+  faqList,
+  faqs,
+  type FAQItem,
+};
+
+export const companyInfo = {
+  clientName: "Mr. Avinash Yadav",
+  businessName: "Akvera Universal",
+  tagline: "Connecting Indian Excellence to Global Markets",
+  address: "Kolhapur, Maharashtra, India",
+  phone: "+91 902 1300 674",
+  email: "info@akverauniversal.com",
+  whatsapp: "+91 902 1300 674",
+  workingHours: "Monday – Saturday: 9:00 AM – 7:00 PM IST (Export operations 24/7)",
+  socials: {
+    linkedin: "https://linkedin.com",
+    whatsapp: "https://wa.me/919021300674",
+    email: "mailto:info@akverauniversal.com",
+  },
+  introduction:
+    "Akvera Universal Exporter was built on a simple belief that trade works best when it's built on trust, transparency, and quality. Based in India, we specialize in sourcing and exporting premium agro products, connecting buyers across the globe with authentic, high-quality goods straight from their origin. Every product we export goes through careful selection and quality checks, ensuring that what reaches our clients reflects the standards we stand behind. Our commitment to reliability, timely delivery, and clear communication has helped us build lasting relationships with buyers worldwide. As we grow, our focus remains the same—to be a dependable bridge between Indian markets and the world.",
+};
+
+export const processSteps: [string, string][] = [
+  ["Sourcing", "Direct origin procurement from verified farms and cooperatives across India's premier growing regions."],
+  ["Quality Inspection", "Multi-stage physical checks, Sortex optical grading, and certified laboratory analysis for purity."],
+  ["Packaging", "Food-grade, climate-resilient packaging tailored to your pack sizes, branding, and destination rules."],
+  ["Documentation", "Meticulous preparation of Bills of Lading, Phytosanitary, Origin, Fumigation, and bank LC documents."],
+  ["Container Loading", "Supervised stuffing into clean, desiccated dry or reefer containers at port storage depots."],
+  ["Shipping", "Ocean transit on premier global carriers with milestone tracking from Nhava Sheva (JNPT) and Mundra."],
+  ["Delivery", "Seamless customs clearance and on-time arrival at your destination port, backed by ongoing support."],
 ];
-export const testimonials = [
-  { name: "Ahmed Al Mansoori", country: "United Arab Emirates", role: "Food importer", text: "Consistent quality, clear communication, and deliveries we can count on. Akvera has become a trusted part of our supply chain." },
-  { name: "Sarah Mitchell", country: "United Kingdom", role: "Wholesale distributor", text: "Their attention to product quality and packaging really stands out. An excellent partner for sourcing authentic Indian agro products." },
-  { name: "Daniel Tan", country: "Singapore", role: "Procurement manager", text: "From our first enquiry to our latest shipment, the team has been professional, responsive, and genuinely committed to our business." },
+
+export const industriesServed = [
+  { name: "Food Industry", description: "Bulk high-purity agricultural ingredients for food processing, flour milling, and packaging plants." },
+  { name: "Retail", description: "Consumer-ready and shelf-stable packaged pulses, aromatic spices, and basmati rice for supermarket chains." },
+  { name: "Wholesale", description: "Containerized volume consignments for international commodities merchants and trade distributors." },
+  { name: "Distributors", description: "Consistent, scheduled seasonal shipments supporting nationwide and regional distribution pipelines." },
+  { name: "Importers", description: "A dependable origin partner providing customs-compliant documentation and direct port-to-port logistics." },
+  { name: "Manufacturers", description: "Standardized raw materials like yellow maize, sugar, wheat, and oilseeds meeting precise industrial specs." },
+  { name: "Hospitality", description: "Top-tier aged grains, whole spices, and culinary staples for luxury hotels, catering groups, and airlines." },
+  { name: "Restaurants", description: "Authentic, origin-certified Indian spices and staples delivering unmatched flavor consistency to professional kitchens." },
 ];
-export const blogs = [
-  { id: "indian-agro-exports", title: "Why the world is choosing Indian agro products", category: "Global Trade", date: "12 November 2026", image: "products", intro: "From aromatic basmati to exceptional spices, India brings diversity, quality, and heritage to the global table.", body: "India's diverse agricultural landscape supports a remarkable range of products. For international buyers, this means access to distinctive varieties, experienced growers, and well-established sourcing networks. Choosing the right export partner begins with clear specifications, transparent communication, and careful attention to quality. At Akvera Universal, we bring these principles together, helping buyers select products that suit their markets and requirements." },
-  { id: "export-packaging", title: "Better packaging. Fresher products. Stronger partnerships.", category: "Packaging", date: "5 November 2026", image: "warehouse", intro: "A practical look at protecting agricultural products throughout their export journey.", body: "Export packaging should protect against moisture, handling damage, and contamination. Selecting the appropriate material and pack size depends on the product, destination, and journey. Grain sacks, food-grade liners, and well-ventilated produce packaging each have different roles. Buyers should agree on labelling and packaging specifications before shipment, including batch information and destination requirements." },
-  { id: "export-guide", title: "Your guide to a seamless export journey", category: "Export Guide", date: "28 October 2026", image: "ship", intro: "The key steps that take a product from Indian farms to your doorstep.", body: "A successful shipment starts with a detailed enquiry. Share the product, quantity, quality parameters, packaging, and destination. Your export partner can then confirm availability and prepare a quotation. Once terms are agreed, sourcing, inspection, packing, and documentation begin. Regular progress updates and a reliable logistics partner help make the journey transparent from order to delivery." },
+
+export const statistics = [
+  { value: "500+", label: "Clients Globally", subtitle: "Trusted by importers in 35+ countries" },
+  { value: "35+", label: "Countries Served", subtitle: "Spanning Middle East, Europe, Americas & Asia" },
+  { value: "100+", label: "Products Exported", subtitle: "Grains, pulses, spices, fresh produce & sugar" },
+  { value: "99%", label: "Customer Satisfaction", subtitle: "On-time delivery & zero-defect compliance" },
 ];
-export const faqs = [
-  ["What products does Akvera Universal export?", "We source and export rice, wheat, maize, spices, pulses, fresh produce, groundnuts, millets, sugar, and other agricultural products from India."],
-  ["How can I request a quotation?", "Use the Get Quote button, or contact us at info@akverauniversal.com with your product, quantity, packaging, and destination requirements."],
-  ["Which countries do you serve?", "Our sample destination network covers the Middle East, Asia, Europe, North America, Africa, and Australia. Contact us to discuss your destination."],
-  ["What is the minimum order quantity?", "Minimum order quantities vary by product and packaging. Our team will confirm the suitable order size in your quotation."],
-  ["Can you provide custom packaging?", "Yes. We can discuss pack sizes, materials, private labelling, and destination-specific requirements."],
-  ["How do you ensure product quality?", "Products undergo careful selection, batch inspections, packaging checks, and specification reviews before dispatch."],
-  ["Are product samples available?", "Sample availability, shipping arrangements, and costs can be discussed with our team before a bulk order."],
-  ["What shipping options are available?", "Sea freight is commonly used for bulk shipments. Other arrangements depend on product, order size, and destination."],
-  ["How long does delivery take?", "Lead times depend on sourcing, packaging, shipment availability, and the destination. An estimated timeline is included in your quotation."],
-  ["What documents accompany a shipment?", "Documentation is arranged according to the shipment and destination requirements. These may include invoices, packing lists, and origin documentation."],
-  ["Do you offer organic products?", "Organic sourcing options can be discussed. Any specific certification requirement must be confirmed before placing an order."],
-  ["What payment terms do you offer?", "Payment terms are agreed individually during the quotation and order confirmation process."],
-  ["Can I track my shipment?", "Our team provides shipping details and progress updates through the shipment journey."],
-  ["Do you work with distributors and wholesalers?", "Yes. We welcome enquiries from importers, distributors, wholesalers, food manufacturers, and retailers."],
-  ["Where is your company based?", "Akvera Universal is based in Kolhapur, Maharashtra, India. Contact Mr. Avinash Yadav on +91 902 1300 674."],
+
+export const whyChooseUs = [
+  { title: "Premium Quality", text: "Sortex cleaned, laboratory tested, and sourced straight from origin farms." },
+  { title: "Global Standards", text: "Compliance with FSSAI, US FDA, APEDA, ISO 22000, and European import regulations." },
+  { title: "Reliable Supply Chain", text: "Consistent year-round inventory backed by modern warehousing and direct farm networks." },
+  { title: "Timely Delivery", text: "Fast turnaround from Nhava Sheva (JNPT) and Mundra ports with real-time transit tracking." },
+  { title: "Transparent Communication", text: "Direct updates from founder Mr. Avinash Yadav and team at every step of your order." },
+  { title: "Competitive Pricing", text: "Eliminating middlemen through direct origin procurement for optimal commercial margins." },
 ];
-export const modules = ["Products", "Categories", "Countries", "Export Destinations", "Gallery", "Blogs", "Testimonials", "FAQs", "Quality Certificates", "Export Process", "Services", "Team Members", "Homepage Banner", "Hero Slider", "Contact Requests", "Quote Requests", "Newsletter Subscribers", "Site Settings", "Profile", "Change Password", "Media Library", "SEO Settings", "Menu Management", "Footer Management", "Theme Settings", "Analytics Dashboard", "Activity Logs", "Notifications"];
+
+export const modules = [
+  "Products",
+  "Categories",
+  "Countries",
+  "Export Destinations",
+  "Gallery",
+  "Blogs",
+  "Testimonials",
+  "FAQs",
+  "Quality Certificates",
+  "Export Process",
+  "Services",
+  "Team Members",
+  "Homepage Banner",
+  "Hero Slider",
+  "Contact Requests",
+  "Quote Requests",
+  "Newsletter Subscribers",
+  "Site Settings",
+  "Profile",
+  "Change Password",
+  "Media Library",
+  "SEO Settings",
+  "Menu Management",
+  "Footer Management",
+  "Theme Settings",
+  "Analytics Dashboard",
+  "Activity Logs",
+  "Notifications",
+];
+
 export const moduleSlug = (name: string) => name.toLowerCase().replaceAll(" ", "-");
+
 export type DemoRow = { id: string; name: string; detail: string; status: boolean };
-export const initialModules: Record<string, DemoRow[]> = Object.fromEntries(modules.map(name => {
-  let rows: string[][] = [[`${name} sample`, "Demo content for Akvera Universal"]];
-  if (name === "Categories") rows = [...new Set(products.map(p => p.category))].map(c => [c, "Product category"]);
-  if (["Countries", "Export Destinations"].includes(name)) rows = countries.map(c => [c, "International export market"]);
-  if (name === "Blogs") rows = blogs.map(b => [b.title, b.intro]);
-  if (name === "FAQs") rows = faqs;
-  if (name === "Testimonials") rows = testimonials.map(t => [t.name, t.text]);
-  if (name === "Export Process") rows = processSteps;
-  if (name === "Team Members") rows = [["Mr. Avinash Yadav", "Founder · Akvera Universal"]];
-  if (name === "Services") rows = [["Agro sourcing", "Premium product sourcing"], ["Export logistics", "End-to-end shipment coordination"], ["Custom packaging", "Packaging for your market"]];
-  if (name === "Contact Requests") rows = [["James Wilson", "Rice enquiry · United Kingdom"], ["Fatima Hassan", "Spices enquiry · UAE"]];
-  if (name === "Quote Requests") rows = [["Al Noor Trading", "25 MT Basmati Rice · Dubai"], ["Pacific Foods", "10 MT Indian Spices · Singapore"]];
-  if (name === "Newsletter Subscribers") rows = [["buyer@example.com", "Sample subscriber"]];
-  if (name === "Quality Certificates") rows = [["Product specification review", "Sample quality document · Not a verified certificate"], ["Batch inspection report", "Sample inspection document"]];
-  if (name === "Gallery" || name === "Media Library") rows = [["Quality inspection", "Warehouse image"], ["Global shipping", "Cargo ship image"], ["Product collection", "Indian agro products"]];
-  if (name === "Notifications") rows = [["New product enquiry", "A sample enquiry was received"], ["Shipment update", "Sample shipment ready for dispatch"]];
-  if (name === "Activity Logs") rows = [["Product catalogue updated", "Demo administrator · Today"], ["Quote request reviewed", "Demo administrator · Yesterday"]];
-  return [moduleSlug(name), rows.map((r,i) => ({ id: `${moduleSlug(name)}-${i}`, name: r[0], detail: r[1], status: true }))];
-}));
+
+export const initialModules: Record<string, DemoRow[]> = Object.fromEntries(
+  modules.map((name) => {
+    let rows: string[][] = [[`${name} sample`, "Active record in Akvera Universal workspace"]];
+    if (name === "Categories") rows = [...new Set(products.map((p) => p.category))].map((c) => [c, "Active agro product category"]);
+    if (["Countries", "Export Destinations"].includes(name)) rows = countryList.map((c) => [c.name, `${c.region} · ${c.ports.join(", ")}`]);
+    if (name === "Blogs") rows = blogs.map((b) => [b.title, `${b.category} · ${b.date} · ${b.readTime}`]);
+    if (name === "FAQs") rows = faqList.map((f) => [f.question, f.answer]);
+    if (name === "Testimonials") rows = testimonials.map((t) => [t.name, `${t.company} (${t.country}) · 5 Stars`]);
+    if (name === "Export Process") rows = processSteps;
+    if (name === "Team Members") rows = teamMembers.map((m) => [m.name, `${m.role} · ${m.location}`]);
+    if (name === "Services") rows = serviceList.map((s) => [s.title, s.description]);
+    if (name === "Contact Requests")
+      rows = [
+        ["Ahmed Al Mansoori", "info@gulfoasis.ae · UAE · Inquiring about 50 MT Basmati Rice to Jebel Ali · Pending proforma invoice"],
+        ["James Wilson", "j.wilson@ukfooddist.co.uk · UK · Inquiring about 10 MT Turmeric and Cumin · Organic requirements"],
+        ["Daniel Tan", "daniel@singaporetrading.sg · Singapore · Inquiring about Red Chilli and Garlic · In transit"],
+      ];
+    if (name === "Quote Requests")
+      rows = [
+        ["Gulf Oasis Trading", "25 MT 1121 Basmati Rice · CIF Jebel Ali · Need BOPP 10kg bags"],
+        ["Red Sea Agro Imports", "50 MT Golden Sharbati Wheat · CFR Jeddah · Jumbo bags"],
+        ["Albion Fine Foods Ltd", "15 MT Sortex Cumin Seeds & Malabar Black Pepper · FOB Nhava Sheva"],
+        ["Pacific Foods Singapore", "20 MT Fresh Nashik Red Onions · 40ft Reefer Container"],
+      ];
+    if (name === "Newsletter Subscribers")
+      rows = [
+        ["procurement@gulffoods.ae", "Subscribed via corporate portal · Verified trade buyer"],
+        ["importer@eurograins.de", "Subscribed via global market insights · Verified European buyer"],
+        ["sourcing@asiacommodities.sg", "Subscribed via product catalogue"],
+      ];
+    if (name === "Quality Certificates")
+      rows = [
+        ["FSSAI Food Safety Compliance Certificate", "Registration #11524999000123 · Government of India Food Authority"],
+        ["APEDA Export Registration Certificate", "Agricultural & Processed Food Products Export Development Authority"],
+        ["Spices Board of India Mandatory Registration", "Registered Agro Commodity Exporter Certificate"],
+        ["ISO 22000:2018 Food Safety Management", "Audited sorting, handling, and export packaging processes"],
+        ["Phytosanitary & Fumigation Protocol Standard", "National Plant Protection Organization (NPPO) compliance"],
+      ];
+    if (name === "Gallery" || name === "Media Library")
+      rows = galleryItems.map((g) => [g.title, `${g.category} · ${g.description}`]);
+    if (name === "Homepage Banner" || name === "Hero Slider")
+      rows = [
+        ["Connecting Indian Excellence to Global Markets", "Active Primary Hero Banner · High-res ocean container backdrop"],
+        ["Trusted Origin Agro Sourcing from Maharashtra", "Secondary Slider Banner · Farm and harvest focus"],
+        ["Sortex Cleaned Indian Spices to 35+ Nations", "Tertiary Slider Banner · Spice export highlights"],
+      ];
+    if (name === "Site Settings")
+      rows = [
+        ["Company Name", "Akvera Universal"],
+        ["Managing Director", "Mr. Avinash Yadav"],
+        ["Registered Address", "Kolhapur, Maharashtra, India"],
+        ["Official Email", "info@akverauniversal.com"],
+        ["Direct Phone / WhatsApp", "+91 902 1300 674"],
+      ];
+    if (name === "SEO Settings")
+      rows = [
+        ["Primary Meta Title", "Akvera Universal | Premium Indian Agro Exporter"],
+        ["Meta Description", "Connecting Indian Excellence to Global Markets. Premium agro exports delivered with trust, quality, and transparency."],
+        ["Target Keywords", "Indian agro exports, Basmati rice exporter, Indian spices wholesale, Kolhapur Maharashtra exporter, agro commodities India"],
+      ];
+    if (name === "Menu Management")
+      rows = [
+        ["Main Header Navigation", "Home, About, Products, Industries, Export Process, Quality, Gallery, Blog, Testimonials, FAQ, Contact"],
+        ["Footer Quick Links", "Products, Industries, Process, Quality, Testimonials, FAQ, Sitemap, Privacy, Terms"],
+      ];
+    if (name === "Footer Management")
+      rows = [
+        ["Copyright Notice", "© 2026 Akvera Universal. All rights reserved."],
+        ["Admin Login Link", "Rendered securely at bottom right footer with route redirect to /admin/login"],
+      ];
+    if (name === "Theme Settings")
+      rows = [
+        ["Primary Color", "Deep Forest Green (#1E5631)"],
+        ["Secondary Color", "Natural Leaf Green (#4CAF50)"],
+        ["Accent Color", "Golden Wheat (#D4A017)"],
+        ["Background Color", "Off White (#FAFAF7) / Dark (#1B1B1B)"],
+      ];
+    if (name === "Analytics Dashboard")
+      rows = [
+        ["Total Monthly Export Volume", "1,850 Metric Tonnes"],
+        ["Active Container Shipments", "28 FCL Containers in Transit"],
+        ["Annual Customer Retention", "94.6% Repeat Global Buyers"],
+        ["Average Port Dispatch Time", "12 Calendar Days"],
+      ];
+    if (name === "Activity Logs")
+      rows = [
+        ["Product catalogue updated", "Added Sortex Cleaned Sesame Seeds · Admin user · 10 mins ago"],
+        ["Quote request reviewed", "Al Mansoori (UAE) proforma generated · Admin user · 1 hour ago"],
+        ["Phytosanitary certificate uploaded", "Consignment #AKV-2026-88 · 3 hours ago"],
+        ["Shipment departed JNPT", "Vessel MSC LORETTA loaded with 4x40ft Basmati · Yesterday"],
+      ];
+    if (name === "Notifications")
+      rows = [
+        ["New Quote Request Received", "Gulf Oasis Foodstuff requested quote for 25 MT Basmati · 15 mins ago"],
+        ["Bill of Lading Confirmed", "Shipping line issued BL for Container #MSCU4920194 · 2 hours ago"],
+        ["New Newsletter Subscriber", "procurement@gulffoods.ae joined updates list · 4 hours ago"],
+      ];
+    if (name === "Profile")
+      rows = [
+        ["Name", "Mr. Avinash Yadav"],
+        ["Role", "Managing Director & Chief Export Officer"],
+        ["Location", "Kolhapur, Maharashtra, India"],
+        ["Email", "info@akverauniversal.com"],
+      ];
+    if (name === "Change Password")
+      rows = [
+        ["Password Security", "Demo administrator session authenticated · No reset required in demo"],
+      ];
+
+    return [
+      moduleSlug(name),
+      rows.map((r, i) => ({
+        id: `${moduleSlug(name)}-${i}`,
+        name: r[0],
+        detail: r[1],
+        status: true,
+      })),
+    ];
+  })
+);
